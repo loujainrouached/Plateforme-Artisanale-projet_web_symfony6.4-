@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="style.css">
+    
+	<link rel="stylesheet" href="{{asset('assets/front-office/assets/css/login.css')}}">
+</head>
+<body>
+    <div class="container">
+        <div class="image-container"></div>
+        <div class="form-container">
+           
+                <h1>Create Account</h1>
+                <div class="social-container">
+                    <a href="#" class="social"><ion-icon name="logo-facebook"></ion-icon></a>
+                    <a href="#" class="social"><ion-icon name="logo-google"></ion-icon></a>
+                    <a href="#" class="social"><ion-icon name="logo-linkedin"></ion-icon></a>
+                </div>
+                <span>or use your email for registration</span>
+              {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+    <div class="form-holder">
+        {{ form_widget(form.name, {'attr': {'class': 'input', 'placeholder': 'Name'}}) }}
+        {{ form_errors(form.name, {'attr': {'class': 'text-danger small'}}) }}
+
+        {{ form_widget(form.lastname, {'attr': {'class': 'input', 'placeholder': 'Last Name'}}) }}
+        {{ form_errors(form.lastname, {'attr': {'class': 'text-danger small'}}) }}
+
+        {{ form_widget(form.roles, {'attr': {'class': 'input select-input'}}) }}
+        {{ form_errors(form.roles, {'attr': {'class': 'text-danger small'}}) }}
+
+        {{ form_widget(form.password, {'attr': {'class': 'input', 'placeholder': 'Password'}}) }}
+        {{ form_errors(form.password, {'attr': {'class': 'text-danger small'}}) }}
+
+        {{ form_widget(form.confirmPassword, {'attr': {'class': 'input', 'placeholder': 'Confirm Password'}}) }}
+        {{ form_errors(form.confirmPassword, {'attr': {'class': 'text-danger small'}}) }}
+{% for error in form.password.vars.errors %}
+    <small class="text-danger d-block">{{ error.message }}</small>
+{% endfor %}
+
+
+ {#  {% for message in app.flashes('error') %}
+    <div class="alert alert-danger p-1 small">{{ message }}</div>
+{% endfor %} #}
+        {{ form_widget(form.email, {'attr': {'class': 'input', 'placeholder': 'Email'}}) }}
+        {{ form_errors(form.email, {'attr': {'class': 'text-danger small'}}) }}
+
+        <div style="display: none;">
+            {{ form_widget(form.dateCreation) }}
+        </div>
+    </div>
+
+    <button class="submit-btn">Sign up</button>
+
+{{ form_end(form) }}
+
+        </div>
+    </div>
+    <script src="https://unpkg.com/ionicons@4.2.2/dist/ionicons.js"></script>
+</body>
+</html>
