@@ -9,19 +9,16 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
-
-
 class SecurityController extends AbstractController
 {
     #[Route('/loginn', name: 'login')]
     public function loginn(AuthenticationUtils $authenticationUtils, Request $request): Response
     {
-       // dump($request->request->all()); // Debugging: Check what data is submitted
-        //dump($authenticationUtils->getLastUsername()); // Check last username value
+      
 
         $form = $this->createForm(LoginType::class);
 
-        // Handle the form submission
+        
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -29,7 +26,7 @@ class SecurityController extends AbstractController
             return $this->redirectToRoute('app_home'); 
         }
 
-         // Get the login error (if there is any)
+        
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername()?? '';
 
@@ -63,7 +60,7 @@ class SecurityController extends AbstractController
             $roles = $this->getUser()->getRoles();
 
             if (in_array('ROLE_ADMIN', $roles)) {
-                return $this->redirectToRoute('dash_user');
+                return $this->redirectToRoute('back_user');
             } elseif (in_array('ROLE_USER', $roles)) {
                 return $this->redirectToRoute('app_home');
             } 
@@ -75,7 +72,6 @@ class SecurityController extends AbstractController
         return $this->redirectToRoute('app_login');
 
 
-        // Si aucun rôle trouvé, on redirige vers la page d'accueil
     }
 
     #[Route('/logout', name: 'app_logout', methods: ['GET'])]

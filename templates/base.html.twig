@@ -115,11 +115,23 @@
 									</ul>
 								</li>
 								<li>
-									<div class="header-icons">
-										<a class="shopping-cart" href="cart.html"><i class="fas fa-shopping-cart"></i></a>
-										<a class="mobile-hide search-bar-icon" href="#"><i class="fas fa-search"></i></a>
-									</div>
-								</li>
+    <div class="header-icons">
+    <a class="shopping-cart" href="cart.html"><i class="fas fa-shopping-cart"></i></a>
+    <a class="mobile-hide search-bar-icon" href="#"><i class="fas fa-search"></i></a>
+
+    {% if not app.user %}
+        <!-- Show Sign Up & Sign In only if the user is NOT logged in -->
+        <a class="mobile-hide" href="{{ path('add_user') }}"><i class="fas fa-user-plus"></i></a> <!-- Sign Up -->
+        <a class="mobile-hide" href="{{ path('login') }}"><i class="fas fa-sign-in-alt"></i></a> <!-- Sign In -->
+    {% else %}
+        <!-- Show Profile and Logout when the user IS logged in -->
+        <a class="mobile-hide" href="{{ path('profil', { 'id': app.user.id }) }}"><i class="fas fa-user"></i></a> <!-- Profile -->
+        <a class="mobile-hide" href="{{ path('app_logout') }}"><i class="fas fa-sign-out-alt"></i></a> <!-- Logout -->
+    {% endif %}
+</div>
+
+</li>
+
 							</ul>
 						</nav>
 						<a class="mobile-show search-bar-icon" href="#"><i class="fas fa-search"></i></a>

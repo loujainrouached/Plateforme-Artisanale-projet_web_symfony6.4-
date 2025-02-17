@@ -20,43 +20,67 @@
                     <a href="#" class="social"><ion-icon name="logo-google"></ion-icon></a>
                     <a href="#" class="social"><ion-icon name="logo-linkedin"></ion-icon></a>
                 </div>
-                <span>or use your email for registration</span>
-              {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-    <div class="form-holder">
-        {{ form_widget(form.name, {'attr': {'class': 'input', 'placeholder': 'Name'}}) }}
-        {{ form_errors(form.name, {'attr': {'class': 'text-danger small'}}) }}
+              <span>or use your email for registration</span>
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+<div class="form-holder">
+    {{ form_widget(form.name, {'attr': {'class': 'input', 'placeholder': 'Name'}}) }}
+    {% for error in form.name.vars.errors %}
+        <small class="error-msg">{{ error.message }}</small>
+    {% endfor %}
 
-        {{ form_widget(form.lastname, {'attr': {'class': 'input', 'placeholder': 'Last Name'}}) }}
-        {{ form_errors(form.lastname, {'attr': {'class': 'text-danger small'}}) }}
+    {{ form_widget(form.lastname, {'attr': {'class': 'input', 'placeholder': 'Last Name'}}) }}
+    {% for error in form.lastname.vars.errors %}
+        <small class="error-msg">{{ error.message }}</small>
+    {% endfor %}
 
-        {{ form_widget(form.roles, {'attr': {'class': 'input select-input'}}) }}
-        {{ form_errors(form.roles, {'attr': {'class': 'text-danger small'}}) }}
+    {{ form_widget(form.roles, {'attr': {'class': 'input select-input'}}) }}
+    {% for error in form.roles.vars.errors %}
+        <small class="error-msg">{{ error.message }}</small>
+    {% endfor %}
 
-        {{ form_widget(form.password, {'attr': {'class': 'input', 'placeholder': 'Password'}}) }}
-        {{ form_errors(form.password, {'attr': {'class': 'text-danger small'}}) }}
+    {{ form_widget(form.password, {'attr': {'class': 'input', 'placeholder': 'Password'}}) }}
+    {% for error in form.password.vars.errors %}
+        <small class="error-msg">{{ error.message }}</small>
+    {% endfor %}
 
-        {{ form_widget(form.confirmPassword, {'attr': {'class': 'input', 'placeholder': 'Confirm Password'}}) }}
-        {{ form_errors(form.confirmPassword, {'attr': {'class': 'text-danger small'}}) }}
-{% for error in form.password.vars.errors %}
-    <small class="text-danger d-block">{{ error.message }}</small>
-{% endfor %}
+    {{ form_widget(form.confirmPassword, {'attr': {'class': 'input', 'placeholder': 'Confirm Password'}}) }}
+    {% for error in form.confirmPassword.vars.errors %}
+        <small class="error-msg">{{ error.message }}</small>
+    {% endfor %}
 
+    {{ form_widget(form.email, {'attr': {'class': 'input', 'placeholder': 'Email'}}) }}
+    {% for error in form.email.vars.errors %}
+        <small class="error-msg">{{ error.message }}</small>
+    {% endfor %}
 
- {#  {% for message in app.flashes('error') %}
-    <div class="alert alert-danger p-1 small">{{ message }}</div>
-{% endfor %} #}
-        {{ form_widget(form.email, {'attr': {'class': 'input', 'placeholder': 'Email'}}) }}
-        {{ form_errors(form.email, {'attr': {'class': 'text-danger small'}}) }}
-
-        <div style="display: none;">
-            {{ form_widget(form.dateCreation) }}
-        </div>
+    <div style="display: none;">
+        {{ form_widget(form.dateCreation) }}
     </div>
+</div>
 
-    <button class="submit-btn">Sign up</button>
-
+<button class="submit-btn">Sign up</button>
 {{ form_end(form) }}
-
+<style>
+    .error-msg {
+        font-size: 0.8em;      /* Smaller font size */
+        color: #ff5555;        /* A bright red color */
+        margin-top: 2px;       /* Optional: add a little space above the error */
+        display: block;        /* Ensure each error is on its own line */
+    }
+</style>
+{# <style>
+    .alert {
+        padding: 10px;
+        margin-top: 10px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+    }
+    .alert-danger {
+        color: #a94442;
+        background-color: #f2dede;
+        border-color: #ebccd1;
+    }
+</style> #}
         </div>
     </div>
     <script src="https://unpkg.com/ionicons@4.2.2/dist/ionicons.js"></script>

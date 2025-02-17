@@ -43,13 +43,7 @@ class UserType extends AbstractType
                 ])
                 ->add('password', PasswordType::class, [
                     'label' => 'Mot de passe',
-                    'constraints' => [
-                        new Assert\NotBlank(['message' => 'Le mot de passe est obligatoire.']),
-                        new Assert\Length([
-                            'min' => 8,
-                            'minMessage' => 'Votre mot de passe doit contenir au moins {{ limit }} caractères.',
-                        ]),
-                    ],
+                    
                     'attr' => ['class' => 'form-control', 'placeholder' => 'Mot de passe'],
                 ])
                 ->add('confirmPassword', PasswordType::class, [

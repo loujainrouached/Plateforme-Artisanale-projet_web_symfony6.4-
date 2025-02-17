@@ -22,6 +22,7 @@ security:
                 username_parameter: email # Should match the form field name
                 password_parameter: password # Should match the form field name
                 default_target_path: app_redirect_by_role
+                enable_csrf: true   
                 # authenticator: Symfony\Component\Security\Http\Authentication\UsernamePasswordFormAuthenticator
             logout:
                 path: app_logout
@@ -38,6 +39,8 @@ security:
         # - { path: ^/dashboard, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
         # - { path: ^/profile, roles: ROLE_ARTISTE }
+          - { path: ^/delete, roles: ROLE_ADMIN }
+
 
 when@test:
     security:

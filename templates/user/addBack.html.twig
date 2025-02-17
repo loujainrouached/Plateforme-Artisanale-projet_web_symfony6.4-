@@ -1,0 +1,142 @@
+
+{% extends 'baseBack.html.twig' %}
+{% block content %}
+ <div class="container">
+          <div class="page-inner">
+           {#  <div class="page-header">
+              <h3 class="fw-bold mb-3">Forms</h3>
+              <ul class="breadcrumbs mb-3">
+                <li class="nav-home">
+                  <a href="#">
+                    <i class="icon-home"></i>
+                  </a>
+                </li>
+                <li class="separator">
+                  <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                  <a href="#">Forms</a>
+                </li>
+                <li class="separator">
+                  <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                  <a href="#">Basic Form</a>
+                </li>
+              </ul>
+            </div> #}
+            <div class="row">
+              <div class="col-md-12">   
+                <div class="card">
+                  <div class="card-header">
+                    <div class="card-title">Add new User</div>
+                  </div>
+                  <div class="card-body">
+                    <div class="row">
+                     <div class="col-6 ">
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+    
+    <div class="form-group">
+        <label for="{{ form.name.vars.id }}">Name</label>
+        {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Enter Name'}}) }}
+       {% for error in form.name.vars.errors %}
+        <small class="text-danger d-block">{{ error.message }}</small>
+    {% endfor %}
+    </div>
+
+    <div class="form-group">
+        <label for="{{ form.lastname.vars.id }}">Last Name</label>
+        {{ form_widget(form.lastname, {'attr': {'class': 'form-control', 'placeholder': 'Enter Last Name'}}) }}
+        {% for error in form.lastname.vars.errors %}
+        <small class="text-danger d-block">{{ error.message }}</small>
+    {% endfor %}
+    </div>
+
+    <div class="form-group">
+        <label for="{{ form.email.vars.id }}">Email Address</label>
+        {{ form_widget(form.email, {'attr': {'class': 'form-control', 'placeholder': 'Enter Email'}}) }}
+       {% for error in form.email.vars.errors %}
+        <small class="text-danger d-block">{{ error.message }}</small>
+    {% endfor %}
+    </div>
+
+    
+   
+
+</div>
+
+
+
+
+
+
+
+
+
+
+<div class="col-6 ">
+
+                <div class="form-group">
+        <label for="{{ form.password.vars.id }}">Password</label>
+        {{ form_widget(form.password, {'attr': {'class': 'form-control', 'placeholder': 'Password'}}) }}
+      {% for error in form.password.vars.errors %}
+        <small class="text-danger d-block">{{ error.message }}</small>
+    {% endfor %}
+    </div>
+
+    <div class="form-group">
+        <label for="{{ form.confirmPassword.vars.id }}">Confirm Password</label>
+        {{ form_widget(form.confirmPassword, {'attr': {'class': 'form-control', 'placeholder': 'Confirm Password'}}) }}
+        {% for error in form.confirmPassword.vars.errors %}
+        <small class="text-danger d-block">{{ error.message }}</small>
+    {% endfor %}
+    </div>
+
+  
+ 
+                   <div class="form-group">
+        <label for="{{ form.roles.vars.id }}">Role</label>
+        {{ form_widget(form.roles, {'attr': {'class': 'form-select'}}) }}
+       {% for error in form.roles.vars.errors %}
+        <small class="text-danger d-block">{{ error.message }}</small>
+    {% endfor %}
+    </div>
+
+{# <div class="form-group">
+    <label for="{{ form.photoFile.vars.id }}">Profile Picture</label>
+    {{ form_widget(form.photoFile, {'attr': {'class': 'form-control-file'}}) }}
+    {{ form_errors(form.photoFile, {'attr': {'class': 'text-danger small'}}) }}
+</div>
+       #}              
+     <div class="form-group">
+        <label for="{{ form.photo.vars.id }}">Profile Picture</label>
+        {{ form_widget(form.photo, {'attr': {'class': 'custom-file-input','id':'photoInput'}}) }}
+       {% for error in form.photo.vars.errors %}
+        <small class="text-danger d-block">{{ error.message }}</small>
+    {% endfor %}
+    </div>
+ 
+    <div style="display: none;">
+        {{ form_widget(form.dateCreation) }}
+    </div>
+
+   
+</div>
+ 
+
+
+                      
+                     
+                    </div>
+                  </div>
+                   
+                  <div class="card-action">
+                  <button class="btn btn-primary mt-3">Add User</button>
+                  </div>
+                </div>
+              </div>
+              {{ form_end(form) }}
+            </div>
+          </div>
+        </div>
+        {% endblock %}

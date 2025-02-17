@@ -8,9 +8,11 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
-#[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+#[ORM\Entity(repositoryClass: UserRepository::class)]/* 
+#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])] */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -31,10 +33,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: "Le mot de passe est obligatoire.")]
-#[Assert\Length(min: 8, minMessage: "Votre mot de passe doit contenir au moins {{ limit }} caractères.")]
-    private ?string $password = null;
+    #[Assert\Length(min: 8, minMessage: "Votre mot de passe doit contenir au moins {{ limit }} caractères.")]
+        private ?string $password = '';
      
-     #[ORM\Column(length:255)]
+     #[ORM\Column(length:255,unique:true)]
     #[Assert\NotBlank(message: "L'email est obligatoire.")]
 #[Assert\Email( message: "L'email '{{ value }}' n'est pas valide.")]
     private ?string $email = null;
@@ -44,6 +46,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $dateCreation = null;
+
+   
 
     public function getId(): ?int
     {
@@ -108,14 +112,25 @@ public function setRoles(array $roles): static
 
 
 
+
     public function getPassword(): ?string
     {
         return $this->password;
     }
 
-    public function setPassword(string $password): static
+   /*  public function setPassword(string $password): static
     {
         $this->password = $password;
+
+        return $this;
+    } */
+
+    public function setPassword(?string $password): self
+    {
+        // If password is null or empty, do nothing (keep the old one)
+        if (!empty($password)) {
+            $this->password = $password;
+        }
 
         return $this;
     }
@@ -131,6 +146,12 @@ public function setRoles(array $roles): static
 
         return $this;
     }
+
+
+
+
+  
+
 
     public function getPhoto(): ?string
     {

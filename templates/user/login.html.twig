@@ -23,20 +23,37 @@
                 <span>or use your email for connection</span>
 
 
-      <form action="{{ path('login') }}" method="post">
+   <form action="{{ path('login') }}" method="post" novalidate>
     <div class="form-holder">
-        <input type="email" name="email" placeholder="Email" required>
-        <input type="password" name="password" placeholder="Password" required>
+        <!-- Remove raw printing of the token and use a hidden field instead -->
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+        <!-- Username & Password fields -->
+        <input type="email" name="email" placeholder="Email" >
+        <input type="password" name="password" placeholder="Password" >
     </div>
+     {% if error %}
+        <p class="text-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</p>
+    {% endif %}
 
     <button class="submit-btn">Sign in</button>
 
-    {# Display error messages if login fails #}
-    {% if error %}
-        <p class="text-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</p>
-    {% endif %}
+   
 </form>
 
+<style>
+    .alert {
+        padding: 10px;
+        margin-top: 10px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+    }
+    .alert-danger {
+        color: #a94442;
+        background-color: #f2dede;
+        border-color: #ebccd1;
+    }
+</style>
         </div>
     </div>
     <script src="https://unpkg.com/ionicons@4.2.2/dist/ionicons.js"></script>
