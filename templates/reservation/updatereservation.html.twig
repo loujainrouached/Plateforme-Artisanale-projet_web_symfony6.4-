@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<title>{% block title %}dashboard{% endblock %}</title>
+    <title>Datatables - Kaiadmin Bootstrap 5 Admin Dashboard</title>
     <meta
       content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
       name="viewport"
@@ -211,7 +211,7 @@
                  
                    
                     <li>
-                      <a href="{{path('back_user')}}">
+                      <a href="tables/datatables.html">
                         <span class="sub-item">users</span>
                       </a>
                     </li>
@@ -322,16 +322,16 @@
                   {#   <li>
                       <a href="tables/tables.html">
                         <span class="sub-item">Basic Table</span>
-                      </a>   
+                      </a>
                     </li> #}
                     <li>
-                      <a href="{{('app_atelier')}}">
+                      <a href="tables/datatables.html">
                         <span class="sub-item">Workshop</span>
                       </a>
                     </li>
                     <li>
-                      <a href="{{('back_reservations')}}">
-                        <span class="sub-item">Reservations</span>
+                      <a href="tables/datatables.html">
+                        <span class="sub-item">Inscription</span>
                       </a>
                     </li>
                   </ul>
@@ -791,14 +791,14 @@
                   >
                     <div class="avatar-sm">
                       <img
-                        src="{{app.user.photo}}"
+                        src="assets/back-office/assets/img/profile.jpg"
                         alt="..."
                         class="avatar-img rounded-circle"
                       />
                     </div>
                     <span class="profile-username">
                       <span class="op-7">Hi,</span>
-                      <span class="fw-bold">{{app.user.name}}</span>
+                      <span class="fw-bold">Hizrian</span>
                     </span>
                   </a>
                   <ul class="dropdown-menu dropdown-user animated fadeIn">
@@ -807,16 +807,16 @@
                         <div class="user-box">
                           <div class="avatar-lg">
                             <img
-                              src="{{app.user.photo}}"
+                              src="assets/back-office/assets/img/profile.jpg"
                               alt="image profile"
                               class="avatar-img rounded"
                             />
                           </div>
                           <div class="u-text">
                             <h4>Hizrian</h4>
-                            <p class="text-muted">{{app.user.email}}</p>
+                            <p class="text-muted">hello@example.com</p>
                             <a
-                             href="{{path('profil')}}" 
+                              href="profile.html"
                               class="btn btn-xs btn-secondary btn-sm"
                               >View Profile</a
                             >
@@ -825,13 +825,13 @@
                       </li>
                       <li>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="{{path('profil')}}">My Profile</a>
-                        
+                        <a class="dropdown-item" href="#">My Profile</a>
+                        <a class="dropdown-item" href="#">My Balance</a>
                         <a class="dropdown-item" href="#">Inbox</a>
                         <div class="dropdown-divider"></div>
-                       
+                        <a class="dropdown-item" href="#">Account Setting</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="{{path('app_logout')}}">Logout</a>
+                        <a class="dropdown-item" href="#">Logout</a>
                       </li>
                     </div>
                   </ul>
@@ -842,10 +842,99 @@
           <!-- End Navbar -->
         </div>
 
-        
-               {% block content %}
-        <!-- Ce bloc sera remplacé par les fichiers qui étendent baseback.html.twig -->
-        {% endblock %}
+        <div class="container">
+          <div class="page-inner">
+            <div class="page-header">
+              <h3 class="fw-bold mb-3">DataTables.Net</h3>
+              <ul class="breadcrumbs mb-3">
+                <li class="nav-home">
+                  <a href="#">
+                    <i class="icon-home"></i>
+                  </a>
+                </li>
+                <li class="separator">
+                  <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                  <a href="#">Tables</a>
+                </li>
+                <li class="separator">
+                  <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                  <a href="#">Datatables</a>
+                </li>
+              </ul>
+            </div>
+            
+
+   <div class="container">
+    <div class="page-inner">
+        <div class="page-header">
+            <h3 class="fw-bold mb-3">Update Workshop</h3>
+            <ul class="breadcrumbs mb-3">
+                <li class="nav-home">
+                    <a href="#">
+                        <i class="icon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Workshops</a>
+                </li>
+                <li class="separator">
+                    <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Update Workshop</a>
+                </li>
+            </ul>
+        </div>
+        <div class="row">
+            <div class="col- md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Update Workshop Details</div>
+                    </div>
+                    <div class="card-body">
+                     {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+{{ form_errors(form) }}
+<div class="row">
+    <div class="col-md-6 col-lg-4">
+        <div class="form-group">
+            {{ form_label(form.seatsReserved, 'Seats Reserved') }}
+            {{ form_widget(form.seatsReserved, {'attr': {'class': 'form-control'}}) }}
+          
+           {% for error in form.seatsReserved.vars.errors %}
+                <div class="text-danger">{{ error.message }}</div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+        <div class="form-group">
+            {{ form_label(form.notes, 'Notes') }}
+            {{ form_widget(form.notes, {'attr': {'class': 'form-control', 'placeholder': 'Enter notes...'}}) }}
+          
+            {% for error in form.notes.vars.errors %}
+                <div class="text-danger">{{ error.message }}</div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<div class="card-action">
+    <button type="submit" class="btn btn-success">Update Reservation</button>
+    <a href="{{ path('back_reservations') }}" class="btn btn-danger">Cancel</a>
+</div>
+{{ form_end(form) }}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
         <footer class="footer">
           <div class="container-fluid d-flex justify-content-between">
@@ -1072,11 +1161,15 @@
       <!-- End Custom template -->
     </div>
     <!--   Core JS Files   -->
-    <script src="{{asset('assets/back-office/assets/js/core/jquery-3.7.1.min.js')}}"></script>{# 
-    <script src="{{asset('assets/back-office/assets/js/core/popper.min.js')}}"></script> #}
+    <script src="{{asset('assets/back-office/assets/js/core/jquery-3.7.1.min.js')}}"></script>
+    <script src="{{asset('assets/back-office/assets/js/core/popper.min.js')}}"></script>
     <script src="{{asset('assets/back-office/assets/js/core/bootstrap.min.js')}}"></script>
-  
+
     <!-- jQuery Scrollbar -->
+
+
+
+    
     <script src="{{asset('assets/back-office/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js')}}"></script>
     <!-- Datatables -->
     <script src="{{asset('assets/back-office/assets/js/plugin/datatables/datatables.min.js')}}"></script>
@@ -1136,10 +1229,15 @@
               $("#addPosition").val(),
               $("#addOffice").val(),
               action,
-]); $("#addRowModal").modal("hide"); });  }); </script> 
+            ]);
+          $("#addRowModal").modal("hide");
+        });
+      });
+    </script>
 
- 
-        
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> 
 
-</body> </html>
+    
+
+
+  </body>
+</html>

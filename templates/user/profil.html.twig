@@ -129,6 +129,8 @@
         <a class="btn btn-info" href="{{ path('edit_profil', { 'id': user.id }) }}">Edit</a>
     </div> #}
 
+
+
 <div class="dropdown text-end">
     <a href="#" class="text-secondary" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
         <i class="fas fa-ellipsis-v"></i>
@@ -162,8 +164,52 @@
                   
 </div>
 
+
+
+             
+
+        </div>
+
+        
+    </div>
+       <!-- Reservation List as Cards -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="mb-3">Your Reservations</h5>
+                        {% if reservations is empty %}
+                            <p class="text-muted">You have no reservations.</p>
+                        {% else %}
+                            <div class="row">
+                                {% for reservation in reservations %}
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card shadow-sm">
+                                            <div class="card-body">
+                                                <h6 class="card-title text-primary">{{ reservation.workshop.title }}</h6>
+                                                <p><strong>Seats Reserved:</strong> {{ reservation.SeatsReserved }}</p>
+                                                <p><strong>Notes:</strong> {{ reservation.notes }}</p>
+                                                <p><strong>Date:</strong> {{ reservation.dateReservation|date('Y-m-d H:i') }}</p>
+                                                <p><strong>Unique Code:</strong> {{ reservation.uniqueCode }}</p>
+                                                <div class="d-flex justify-content-between">
+                                                    <a href="{{ path('edit_reservation', { 'id': reservation.id }) }}" class="btn btn-sm btn-outline-primary">
+                                                        <i class="fas fa-edit"></i> Edit
+                                                    </a>
+                                                    <a href="{{ path('delete_reservation', { 'id': reservation.id }) }}" class="btn btn-sm btn-outline-danger">
+                                                        <i class="fas fa-trash-alt"></i> Delete
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
+</div>
 </div>
 
 

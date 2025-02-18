@@ -1,0 +1,168 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ArticleController!{% endblock %}
+
+{% block body %}
+
+	<!-- search area -->
+	<div class="search-area">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12">
+					<span class="close-btn"><i class="fas fa-window-close"></i></span>
+					<div class="search-bar">
+						<div class="search-bar-tablecell">
+							<h3>Search For:</h3>
+							<input type="text" placeholder="Keywords">
+							<button type="submit">Search <i class="fas fa-search"></i></button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- end search arewa -->
+	
+	<!-- breadcrumb-section -->
+	<div class="breadcrumb-section breadcrumb-bg">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8 offset-lg-2 text-center">
+					<div class="breadcrumb-text">
+						<p>Read the Details</p>
+						<h1>Single Article</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- end breadcrumb section -->
+	
+<!-- single product -->
+<div class="single-product mt-150 mb-150">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-5">
+                <div class="single-product-img">
+                    <img src="{{ asset(workshop.image) }}" alt="{{ workshop.title }}" class="img-fluid">
+                </div>
+            </div>
+            <div class="col-md-7">
+                <div class="single-product-content">
+                    <h2>{{ workshop.title }}</h2>
+						 <h4>{{ workshop.date|date('Y-m-d H:i') }}</h4>
+                    <p class="single-product-description">{{ workshop.description }}</p>
+                    <span class="location"><i class="fas fa-map-marker-alt"></i> {{ workshop.location }}</span>
+					<div class="single-product-form">
+
+<a href="{{ path('reservation_new', { 'workshopId': workshop.id }) }}" 
+   class="btn btn-primary" 
+   style="background-color: orange; border-color: orange;">
+  Register Now
+</a>
+
+					<a href="{{ path('workshop_detail') }}" class="btn btn-secondary">← Back</a>
+
+                       
+                    </div>
+                    <h4>Share:</h4>
+                    <ul class="product-share">
+                        <li><a href=""><i class="fab fa-facebook-f"></i></a></li>
+                        <li><a href=""><i class="fab fa-twitter"></i></a></li>
+                        <li><a href=""><i class="fab fa-google-plus-g"></i></a></li>
+                        <li><a href=""><i class="fab fa-linkedin"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end single product -->
+
+<!-- Related Workshops Section -->
+<div class="more-products mb-50"> <!-- Reduced margin-bottom from mb-150 to mb-50 -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2 text-center">
+                <div class="section-title">
+                    <h3><span class="orange-text">Related</span> Workshops</h3>
+                    <p class="mb-3">Explore other workshops you might be interested in.</p> <!-- Added mb-3 to reduce space below the paragraph -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Workshop Cards -->
+        <div class="latest-news mt-50 mb-50"> <!-- Reduced margin-top and margin-bottom from mt-150/mb-150 to mt-50/mb-50 -->
+            <div class="container">
+                <div class="row">
+                    {% for workshop in related_workshops %}
+                        <div class="col-lg-4 col-md-6 mb-4"> <!-- Added mb-4 for spacing between cards -->
+                            <div class="single-latest-news">
+                                <!-- Workshop Image -->
+                                <a href="{{ path('workshop_details', {'id': workshop.id}) }}">
+                                    <div class="latest-news-bg" style="background-image: url('{{ asset(workshop.image) }}'); height: 200px; background-size: cover; background-position: center; border-radius: 10px;"></div> <!-- Reduced image height from 250px to 200px -->
+                                </a>
+
+                                <!-- Workshop Details -->
+                                <div class="news-text-box p-3"> <!-- Added p-3 for padding inside the text box -->
+                                    <!-- Workshop Title -->
+                                    <h3 class="mb-2"><a href="{{ path('workshop_details', {'id': workshop.id}) }}">{{ workshop.title }}</a></h3> <!-- Added mb-2 to reduce space below the title -->
+
+                                    <!-- Workshop Date -->
+                                    <p class="date mb-2"><i class="fas fa-calendar-alt"></i> {{ workshop.date|date('Y-m-d H:i') }}</p> <!-- Added mb-2 to reduce space below the date -->
+
+                                    <!-- Workshop Meta (Type and Location) -->
+                                    <p class="blog-meta mb-2"> <!-- Added mb-2 to reduce space below the meta -->
+                                        <span class="type"><i class="fas fa-tag"></i> {{ workshop.type }}</span>
+                                        <span class="location"><i class="fas fa-map-marker-alt"></i> {{ workshop.location }}</span>
+                                    </p>
+
+                                    <!-- Workshop Description Excerpt -->
+                                    <p class="excerpt mb-3">{{ workshop.description|split('.')[:1]|join('.') ~ '...' }}</p> <!-- Added mb-3 to reduce space below the excerpt -->
+
+                                    <!-- Read More Button -->
+                                    <a href="{{ path('workshop_details', {'id': workshop.id}) }}" class="read-more-btn">
+                                        Read More <i class="fas fa-angle-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end related workshops -->
+
+
+	<!-- logo carousel -->
+	<div class="logo-carousel-section">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="logo-carousel-inner">
+						<div class="single-logo-item">
+							<img src="assets/img/company-logos/1.png" alt="">
+						</div>
+						<div class="single-logo-item">
+							<img src="assets/img/company-logos/2.png" alt="">
+						</div>
+						<div class="single-logo-item">
+							<img src="assets/img/company-logos/3.png" alt="">
+						</div>
+						<div class="single-logo-item">
+							<img src="assets/img/company-logos/4.png" alt="">
+						</div>
+						<div class="single-logo-item">
+							<img src="assets/img/company-logos/5.png" alt="">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- end logo carousel -->
+
+	
+{% endblock %}

@@ -1,0 +1,130 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<!-- Search Area -->
+<div class="search-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <span class="close-btn"><i class="fas fa-window-close"></i></span>
+                <div class="search-bar">
+                    <div class="search-bar-tablecell">
+                        <h3>Search For:</h3>
+                        <input type="text" placeholder="Keywords">
+                        <button type="submit">Search <i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Search Area -->
+
+<!-- Breadcrumb Section -->
+<div class="breadcrumb-section breadcrumb-bg">
+    <div class="container text-center">
+        <div class="breadcrumb-text">
+            <p>Welcome</p>
+            <h1>Your Profile</h1>
+        </div>
+    </div>
+</div>
+<!-- End Breadcrumb Section -->
+
+<!-- Profile Section -->
+<div class="container mt-5">
+    <div class="main-body">
+        <div class="row">
+            <!-- Profile Sidebar -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm p-3">
+                    <div class="card-body text-center">
+                        <div class="d-flex flex-column align-items-center text-center">
+    <form id="upload-form" action="{{ path('upload_profile_picture') }}" method="POST" enctype="multipart/form-data">
+        <label for="profile-pic-input" class="profile-pic-label">
+            <img id="profile-pic" 
+                 src="{{ user.photo ?: 'https://bootdey.com/img/Content/avatar/avatar7.png' }}" 
+                 alt="Profile Picture" 
+                 class="rounded-circle profile-pic" 
+                 width="150">
+        </label>
+        <input type="file" id="profile-pic-input" name="profile_picture" style="display: none;" onchange="uploadImage()">
+    </form>
+    <div class="mt-3">
+        <h4>{{ user.name }} {{ user.lastname }}</h4>
+        <p class="text-secondary mb-1">Musicien</p>
+    </div>
+</div>
+
+                    </div>
+                </div>
+            </div>
+
+            
+<style>
+    /* Profile picture styling */
+    .profile-pic {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 3px solid #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transition: transform 0.2s, box-shadow 0.2s;
+        cursor: pointer;
+    }
+
+    /* Hover effect */
+    .profile-pic:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    }
+</style>
+
+<script>
+    function uploadImage() {
+        document.getElementById("upload-form").submit();
+    }
+</script>
+            <!-- Profile Form -->
+            <div class="col-lg-8">
+                <div class="card shadow-sm p-4">
+                    <h5 class="mb-4">Edit Reservation</h5>
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+
+                    <div class="mb-3 row">
+                        <label class="col-sm-3 col-form-label">Seats Reserved</label>
+                        <div class="col-sm-9">
+                            {{ form_widget(form.seatsReserved, { 'attr': {'class': 'form-control'} }) }}
+                            {% for error in form.seatsReserved.vars.errors %}
+                                <div class="text-danger">{{ error.message }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="col-sm-3 col-form-label">Notes</label>
+                        <div class="col-sm-9">
+                            {{ form_widget(form.notes, { 'attr': {'class': 'form-control'} }) }}
+                         
+                            {% for error in form.notes.vars.errors %}
+                                <div class="text-danger">{{ error.message }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="text-end">
+                        <button class="btn btn-primary">Save Changes</button>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Profile Section -->
+
+{% endblock %}

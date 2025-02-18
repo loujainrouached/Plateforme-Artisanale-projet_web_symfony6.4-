@@ -24,8 +24,12 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-
+// Reservation
 use Symfony\Component\Form\FormError;
+use App\Form\ReservationType;
+use App\Repository\ReservationRepository;  // <-- Add this line
+
+
 
 
 final class UserController extends AbstractController
@@ -179,17 +183,18 @@ final class UserController extends AbstractController
     
     #[Route('/profil', name: 'profil')]
     #[IsGranted('ROLE_ARTISTE')]
-    #[IsGranted('ROLE_ARTISTE')]
-    public function profil(): Response
+    #[IsGranted('ROLE_USER')]
+    public function profil(ReservationRepository $reservationRepository): Response
     {
         $user = $this->getUser();
-    
+        $reservations = $reservationRepository->findBy(['user' => $user]);
         if (!$user) {
             return $this->redirectToRoute('login');
         }
     
         return $this->render('user/profil.html.twig', [
             'user' => $user,
+            'reservations' => $reservations,
         ]);
     }
 
@@ -209,7 +214,7 @@ final class UserController extends AbstractController
             if (!$user) {
                 throw $this->createNotFoundException('User not found');
             }
-        
+            
             $form = $this->createForm(UserType::class, $user, ['is_edit' => true]); 
             $form->handleRequest($req);
         
