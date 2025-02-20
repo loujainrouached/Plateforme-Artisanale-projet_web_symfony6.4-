@@ -86,6 +86,10 @@
 
 			<div class="col-lg-8">
     <div class="card">
+	<div class="card-header  text-black">
+                        <h2 class="h4 mb-0">Edit Profil </h2>
+                    </div>
+	<div class="card-body">
               {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
         <div class="card-body">
             <div class="row mb-3">
@@ -94,7 +98,7 @@
                 </div>
                 <div class="col-sm-9 text-secondary">
                     {{ form_widget(form.name, { 'attr': {'class': 'form-control'} }) }}
-					{{ form_errors(form.name) }}
+					
 
                 {% for error in form.name.vars.errors %}
                     <div class="text-danger">{{ error.message }}</div>
@@ -131,6 +135,7 @@
     
         {{ form_end(form) }}
     </div>
+</div>
 </div>
 
 

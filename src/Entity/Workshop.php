@@ -45,7 +45,11 @@ class Workshop
 
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $date = null; // Change ?Date to ?\DateTimeInterface
+    #[Assert\GreaterThan(
+        value: "today",
+        message: "Date must be greater than today's date."
+    )]
+    private ?\DateTimeInterface $date = null; 
 
     #[ORM\Column(length: 255)]
     private ?string $type = null;

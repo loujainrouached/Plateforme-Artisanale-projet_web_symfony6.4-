@@ -1,0 +1,435 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de l'Article{% endblock %}
+
+{% block body %}
+{% block styles %}
+    <style>
+       /* ============================
+   🔹 Nouveau Style Commentaires 🔹
+============================ */
+
+.comments-list-wrap {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Titre de la section */
+.comment-count-title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+/* Conteneur d'un commentaire */
+.single-comment-body {
+    position: relative;
+    background: #fff;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+}
+
+/* Effet au survol */
+.single-comment-body:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Avatar utilisateur */
+.comment-user-avatar {
+    font-size: 45px;
+    color: #f28123;
+    background: rgba(242, 129, 35, 0.15);
+    padding: 10px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    margin-right: 15px;
+}
+
+/* Contenu du commentaire */
+.comment-text-body {
+    flex-grow: 1;
+}
+
+/* Nom de l'utilisateur */
+.comment-text-body h5 {
+    font-size: 18px;
+    font-weight: bold;
+    color: #051922;
+    margin-bottom: 5px;
+}
+
+/* Date */
+.comment-date {
+    font-size: 14px;
+    color: #777;
+    font-weight: 600;
+    margin-left: 5px;
+}
+
+/* Contenu du commentaire */
+.comment-text-body p {
+    font-size: 16px;
+    color: #444;
+    margin: 10px 0;
+}
+
+/* Actions (modifier, supprimer) */
+.comment-actions {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+}
+
+/* Bouton Modifier */
+.comment-actions .btn-warning {
+    background: #ffbe0b;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+/* Effet Hover */
+.comment-actions .btn-warning:hover {
+    background: #e09e00;
+    transform: scale(1.05);
+}
+/* 🔹 Style du bouton Modifier avec icône 🔹 */
+.comment-actions .btn-edit {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: #f28123;
+    transition: color 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+/* Effet hover pour améliorer l'interaction */
+.comment-actions .btn-edit:hover {
+    color: #e09e00;
+    transform: scale(1.2);
+}
+/* Style des étoiles */
+.stars {
+    cursor: pointer;
+}
+
+.stars i {
+    font-size: 24px;
+    color: #ccc;
+    transition: color 0.3s;
+}
+
+.stars i.selected {
+    color: #f39c12;
+}
+
+/* Style du formulaire */
+.comment-form-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 30px;
+}
+
+.comment-form-container h4 {
+    font-size: 20px;
+    font-weight: bold;
+    color: #051922;
+}
+
+.comment-form-container textarea {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 16px;
+}
+.comment-rating {
+    margin-top: 5px;
+}
+
+.comment-rating i {
+    font-size: 18px;
+    margin-right: 2px;
+}
+
+    </style>
+{% endblock %}
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb-section breadcrumb-bg">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 offset-lg-2 text-center">
+                    <div class="breadcrumb-text">
+                        <p>Lire les détails</p>
+                        <h1>{{ article.titre }}</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Single Article Section -->
+    <div class="mt-150 mb-150">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="single-article-section">
+                        <div class="single-article-text">
+                            <!-- Image de l'article -->
+                            <div class="single-article-bg text-center">
+                                {% if article.image %}
+                                    <img src="{{ asset('/assets/back-office/images/' ~ article.image) }}" 
+                                         alt="{{ article.titre }}" class="img-fluid" style="max-width: 100%; height: auto;">
+                                {% else %}
+                                    <p>Aucune image disponible</p>
+                                {% endif %}
+                            </div>
+
+                            <!-- Métadonnées -->
+                            <p class="blog-meta mt-3">
+                                <span class="author"><i class="fas fa-user"></i> {{ article.nomAuteur }}</span>
+                                <span class="date"><i class="fas fa-calendar"></i> {{ article.datepub|date('d/m/Y') }}</span>
+                            </p>
+
+                            <!-- Contenu de l'article -->
+                            <h2 class="mt-3">{{ article.titre }}</h2>
+                            <p>{{ article.contenu }}</p>
+                            <p><strong>Catégorie :</strong> {{ article.categorie }}</p>
+                        </div>
+
+                        <!-- Liste des commentaires -->
+                     <div class="comments-list-wrap mt-5">
+                     
+    <h3 class="comment-count-title">{{ article.Comment|length }} Commentaire(s)</h3>
+    <div class="comment-list">
+        {% if article.Comment is not empty %}
+          {% for comment in article.Comment %}
+<div class="single-comment-body d-flex align-items-center" id="comment-{{ comment.id }}">
+    <!-- ✅ Avatar de l'utilisateur -->
+    <div class="comment-user-avatar me-3">
+        {% if app.user.photo %}
+            <img src="{{  app.user.photo }}" 
+
+                 alt="Photo de {{ comment.user.name }}" 
+                 class="img-fluid rounded-circle"
+                 style="width: 50px; height: 50px; object-fit: cover;">
+        {% else %}
+            <i class="fas fa-user-circle fa-3x"></i> <!-- Icône par défaut -->
+        {% endif %}
+    </div>    
+        <div class="comment-text-body">
+        <div class="comment-rating">
+    {% for i in 1..5 %}
+        {% if comment.rating >= i %}
+            <i class="fas fa-star text-warning"></i> <!-- Étoile pleine -->
+        {% else %}
+            <i class="far fa-star text-secondary"></i> <!-- Étoile vide -->
+        {% endif %}
+    {% endfor %}
+</div>
+            <h5>
+                {{ comment.user.name ?? 'Utilisateur anonyme' }}
+                <span class="comment-date">
+                    <i class="fas fa-calendar-alt"></i> {{ comment.datecom|date('d/m/Y H:i') }}
+                </span>
+            </h5>
+
+            <!-- ✅ Zone affichage du commentaire -->
+            <p id="comment-text-{{ comment.id }}">{{ comment.contenuComment }}</p>
+
+            <!-- ✅ Formulaire caché au départ -->
+            <form id="edit-form-{{ comment.id }}" class="edit-form" action="{{ path('edit_comment_page', {'id': comment.id}) }}" method="POST" style="display: none;">
+                
+                <textarea name="contenuComment" class="form-control" rows="3" >{{ comment.contenuComment }}</textarea>
+                <button type="submit" class="btn btn-success btn-sm mt-2">Enregistrer</button>
+                <button type="button" class="btn btn-secondary btn-sm mt-2" onclick="cancelEdit({{ comment.id }})">Annuler</button>
+            </form>
+
+            {% if comment.user == app.user %}
+                <div class="comment-actions">
+                    <!-- ✅ Bouton Modifier -->
+                    <button class="btn btn-warning btn-sm" onclick="showEditForm({{ comment.id }})">
+                        <i class="fas fa-edit"></i> 
+                    </button>
+                    <form id="delete-form-{{ comment.id }}" action="{{ path('delete_comment', {'id': comment.id}) }}" method="POST" style="display: none;">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete_comment_' ~ comment.id) }}">
+</form>
+
+<button class="btn btn-danger btn-sm" onclick="deleteComment({{ comment.id }})">
+    <i class="fas fa-trash"></i>
+</button>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}
+
+
+        {% else %}
+            <p>Aucun commentaire pour cet article.</p>
+        {% endif %}
+    </div>
+</div>
+
+
+                        <!-- Formulaire d'ajout de commentaire -->
+                       
+                    {% if true %} {# Forcer l'affichage du formulaire #}
+                        <div class="comment-form-container">
+                            {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+    <!-- ✅ Zone de saisie du commentaire -->
+    <div class="form-group">
+        {{ form_label(form.contenuComment, 'Votre commentaire', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.contenuComment, {'attr': {'class': 'form-control', 'rows': '4'}}) }}
+        {% for error in form.contenuComment.vars.errors %}
+            <div class="text-danger">{{ error.message }}</div>
+        {% endfor %}
+    </div>
+
+    <!-- ✅ Note du commentaire -->
+    
+
+    <button type="submit" class="btn btn-primary mt-2">Envoyer</button>
+
+{{ form_end(form) }}
+                        </div>
+                    {% endif %}
+
+                    </div>
+                </div>
+
+                <!-- Sidebar avec les articles récents -->
+                <div class="col-lg-4">
+                    <div class="sidebar-section">
+                        <div class="recent-posts">
+                            <h4>Articles récents</h4>
+                            <ul>
+                                {% for recent_article in recent_articles %}
+                                    <li>
+                                        <a href="{{ path('article_details', {'id': recent_article.id}) }}">
+                                            {{ recent_article.titre }}
+                                        </a>
+                                    </li>
+                                {% else %}
+                                    <li>Aucun article récent.</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+{# <script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Gestion des étoiles pour la note
+    const stars = document.querySelectorAll(".stars i");
+    const ratingInput = document.getElementById("rating");
+
+    stars.forEach(star => {
+        star.addEventListener("click", function () {
+            const value = this.getAttribute("data-value");
+            ratingInput.value = value;
+
+            stars.forEach(s => {
+                s.classList.remove("selected");
+                if (s.getAttribute("data-value") <= value) {
+                    s.classList.add("selected");
+                }
+            });
+        });
+    });
+});
+</script> #}
+<script>
+function deleteComment(commentId) {
+   
+
+    // Récupérer le formulaire caché contenant le token CSRF
+    let form = document.getElementById(`delete-form-${commentId}`);
+    let formData = new FormData(form);
+
+    fetch(form.action, {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+            // ✅ Supprime le commentaire du DOM
+            document.getElementById(`comment-${commentId}`).remove();
+        } else {
+            alert("Erreur : " + data.message);
+        }
+    })
+    .catch(error => console.error("Erreur :", error));
+}
+
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".edit-form").forEach(form => {
+        form.addEventListener("submit", function (event) {
+            event.preventDefault(); // Empêcher le rechargement de la page
+            
+            let formData = new FormData(this);
+            let commentId = this.getAttribute("id").split("-")[2]; // Extraire l'ID du commentaire
+            let url = this.getAttribute("action");
+
+            fetch(url, {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    // ✅ Mise à jour du commentaire affiché
+                    document.getElementById(`comment-text-${commentId}`).textContent = data.newContent;
+                    
+                    // ✅ Masquer le formulaire et afficher le texte modifié
+                    cancelEdit(commentId);
+                }
+            })
+            .catch(error => console.error("Erreur :", error));
+        });
+    });
+});
+
+function showEditForm(commentId) {
+    // Cacher le texte du commentaire et afficher le formulaire
+    document.getElementById(`comment-text-${commentId}`).style.display = 'none';
+    document.getElementById(`edit-form-${commentId}`).style.display = 'block';
+}
+
+function cancelEdit(commentId) {
+    // Réafficher le texte et cacher le formulaire
+    document.getElementById(`comment-text-${commentId}`).style.display = 'block';
+    document.getElementById(`edit-form-${commentId}`).style.display = 'none';
+}
+</script>
+
+
+{% endblock %}

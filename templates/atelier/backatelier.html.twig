@@ -131,18 +131,26 @@
                             <td>{{ workshop.id }}</td>
                                 <td>{{ workshop.title }}</td>
                                 <td>{{ workshop.description|split('.')[:1]|join('.') ~ '...' }}</td>
-                                <td>{{ workshop.image }}</td>
+                                 <td>
+    {% if workshop.image %}
+ <img src="{{ asset(workshop.image) }}" alt="{{workshop.image }}" class="workshop-image" width="100">
+    {% else %}
+       no images
+    {% endif %}
+</td>
                                 <td>{{ workshop.date|date('Y-m-d H:i') }}</td>
                                 <td>{{ workshop.type }}</td>
                                 <td>{{ workshop.location }}</td>
                                <td class="text-center">
     <div class="btn-group">
-        <a href="{{ path('edit_workshop', {'id': workshop.id}) }}" class="btn btn-primary btn-sm">
-            <i class="fa fa-edit"></i> Edit
+        <a href="{{ path('edit_workshop', {'id': workshop.id}) }}" 
+    class="btn btn-link btn-primary btn-lg">
+            <i class="fa fa-edit"></i> 
         </a>
 
-        <a href="{{ path('delete_workshop', {'id': workshop.id}) }}" class="btn btn-primary btn-sm ms-2" onclick="return confirm('Are you sure you want to delete this workshop?');">
-            <i class="fa fa-trash"></i> Delete
+        <a href="{{ path('delete_workshop', {'id': workshop.id}) }}" 
+    class="btn btn-link btn-danger btn-lg" >
+            <i class="fa fa-times"></i> 
         </a>
     </div>
 </td>

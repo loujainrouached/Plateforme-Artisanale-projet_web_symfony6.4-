@@ -1,0 +1,36 @@
+{% extends 'index.html.twig' %}
+
+{% block title %}Nos Articles{% endblock %}
+
+{% block body %}
+    <div class="latest-news mt-150 mb-150">
+        <div class="container">
+            <div class="row">
+                {% for article in articles %}
+                    <div class="col-lg-4 col-md-6">
+                        <div class="single-latest-news">
+                            <a href="{{ path('article_show_front', {'id': article.id}) }}">
+                                {% if article.image %}
+                                    <div class="latest-news-bg" style="background-image: url('{{ asset('assets/front-office/images/' ~ article.image) }}');"></div>
+                                {% else %}
+                                    <div class="latest-news-bg news-bg-1"></div>
+                                {% endif %}
+                            </a>
+                            <div class="news-text-box">
+                                <h3><a href="{{ path('article_show_front', {'id': article.id}) }}">{{ article.titre }}</a></h3>
+                                <p class="blog-meta">
+                                    <span class="author"><i class="fas fa-user"></i> Admin</span>
+                                    <span class="date"><i class="fas fa-calendar"></i> {{ article.datepub|date('Y-m-d') }}</span>
+                                </p>
+                                <p class="excerpt">{{ article.contenu|slice(0, 100) }}...</p>
+                                <a href="{{ path('article_show_front', {'id': article.id}) }}" class="read-more-btn">Lire plus <i class="fas fa-angle-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <p>Aucun article trouvé.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

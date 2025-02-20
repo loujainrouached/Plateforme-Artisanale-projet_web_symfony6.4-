@@ -234,13 +234,13 @@
                   <ul class="nav nav-collapse">
                  
                     <li>
-                      <a href="tables/datatables.html">
+                      <a href="{{path('listProduct')}}">
                         <span class="sub-item">Product</span>
                       </a>
                     </li>
                     <li>
-                      <a href="tables/datatables.html">
-                        <span class="sub-item">Shop</span>
+ <a href="{{path('admin_all_orders')}}">
+                       <span class="sub-item">Orders</span>
                       </a>
                     </li>
                   </ul>
@@ -261,12 +261,12 @@
                   <ul class="nav nav-collapse">
               
                     <li>
-                      <a href="tables/datatables.html">
+                      <a href="{{path('app_article')}}">
                         <span class="sub-item">Article</span>
                       </a>
                     </li>
                     <li>
-                      <a href="tables/datatables.html">
+                      <a href="{{path('app_comment')}}">
                         <span class="sub-item">Comment</span>
                       </a>
                     </li>
@@ -291,12 +291,12 @@
                  
                  
                     <li>
-                      <a href="tables/datatables.html">
+                      <a href="{{path('app_article')}}">
                         <span class="sub-item">Reclamation</span>
                       </a>
                     </li>
                     <li>
-                      <a href="tables/datatables.html">
+                      <a href="{{path('app_comment')}}">
                         <span class="sub-item">Respond</span>
                       </a>
                     </li>
@@ -325,12 +325,12 @@
                       </a>   
                     </li> #}
                     <li>
-                      <a href="{{('app_atelier')}}">
+                      <a href="{{path('workshops')}}">
                         <span class="sub-item">Workshop</span>
                       </a>
                     </li>
                     <li>
-                      <a href="{{('back_reservations')}}">
+                      <a href="{{path('back_reservations')}}">
                         <span class="sub-item">Reservations</span>
                       </a>
                     </li>
@@ -847,7 +847,7 @@
         <!-- Ce bloc sera remplacé par les fichiers qui étendent baseback.html.twig -->
         {% endblock %}
 
-        <footer class="footer">
+       {#  <footer class="footer">
           <div class="container-fluid d-flex justify-content-between">
             <nav class="pull-left">
               <ul class="nav">
@@ -873,7 +873,7 @@
               <a target="_blank" href="https://themewagon.com/">ThemeWagon</a>.
             </div>
           </div>
-        </footer>
+        </footer> #}
       </div>
 
       <!-- Custom template | don't include it in your project! -->
@@ -1072,9 +1072,9 @@
       <!-- End Custom template -->
     </div>
     <!--   Core JS Files   -->
-    <script src="{{asset('assets/back-office/assets/js/core/jquery-3.7.1.min.js')}}"></script>{# 
-    <script src="{{asset('assets/back-office/assets/js/core/popper.min.js')}}"></script> #}
-    <script src="{{asset('assets/back-office/assets/js/core/bootstrap.min.js')}}"></script>
+    <script src="{{asset('assets/back-office/assets/js/core/jquery-3.7.1.min.js')}}"></script>
+{#     <script src="{{asset('assets/back-office/assets/js/core/popper.min.js')}}"></script>
+ #}    <script src="{{asset('assets/back-office/assets/js/core/bootstrap.min.js')}}"></script>
   
     <!-- jQuery Scrollbar -->
     <script src="{{asset('assets/back-office/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js')}}"></script>

@@ -33,35 +33,33 @@
 <!-- End Breadcrumb Section -->
 
 <!-- Profile Section -->
-<div class="container mt-5">
+<!-- Profile Section -->
+<div class="container mt-5 pb-5"> <!-- Added pb-5 to create space before the footer -->
     <div class="main-body">
         <div class="row">
             <!-- Profile Sidebar -->
             <div class="col-lg-4">
-                <div class="card shadow-sm p-3">
+                <div class="card shadow-sm p-3 mb-4"> <!-- Added mb-4 for space -->
                     <div class="card-body text-center">
                         <div class="d-flex flex-column align-items-center text-center">
-    <form id="upload-form" action="{{ path('upload_profile_picture') }}" method="POST" enctype="multipart/form-data">
-        <label for="profile-pic-input" class="profile-pic-label">
-            <img id="profile-pic" 
-                 src="{{ user.photo ?: 'https://bootdey.com/img/Content/avatar/avatar7.png' }}" 
-                 alt="Profile Picture" 
-                 class="rounded-circle profile-pic" 
-                 width="150">
-        </label>
-        <input type="file" id="profile-pic-input" name="profile_picture" style="display: none;" onchange="uploadImage()">
-    </form>
-    <div class="mt-3">
-        <h4>{{ user.name }} {{ user.lastname }}</h4>
-        <p class="text-secondary mb-1">Musicien</p>
-    </div>
-</div>
-
+                            <form id="upload-form" action="{{ path('upload_profile_picture') }}" method="POST" enctype="multipart/form-data">
+                                <label for="profile-pic-input" class="profile-pic-label">
+                                    <img id="profile-pic" 
+                                         src="{{ user.photo ?: 'https://bootdey.com/img/Content/avatar/avatar7.png' }}" 
+                                         alt="Profile Picture" 
+                                         class="rounded-circle profile-pic" 
+                                         width="150">
+                                </label>
+                                <input type="file" id="profile-pic-input" name="profile_picture" style="display: none;" onchange="uploadImage()">
+                            </form>
+                            <div class="mt-3">
+                                <h4>{{ user.name }} {{ user.lastname }}</h4>
+                                <p class="text-secondary mb-1">Musicien</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            
 <style>
     /* Profile picture styling */
     .profile-pic {
@@ -89,10 +87,14 @@
 </script>
             <!-- Profile Form -->
             <div class="col-lg-8">
-                <div class="card shadow-sm p-4">
-                    <h5 class="mb-4">Edit Reservation</h5>
-                    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                <div class="card ">
+                 <!-- Added mb-4 for space -->
+                  <div class="card-header  text-white">
+                        <h2 class="h4 mb-0">Edit Reservation </h2>
+                    </div>
+                                    <div class="card-body">
 
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
 
                     <div class="mb-3 row">
                         <label class="col-sm-3 col-form-label">Seats Reserved</label>
@@ -108,7 +110,6 @@
                         <label class="col-sm-3 col-form-label">Notes</label>
                         <div class="col-sm-9">
                             {{ form_widget(form.notes, { 'attr': {'class': 'form-control'} }) }}
-                         
                             {% for error in form.notes.vars.errors %}
                                 <div class="text-danger">{{ error.message }}</div>
                             {% endfor %}
@@ -124,7 +125,10 @@
             </div>
         </div>
     </div>
+    </div>
 </div>
+<!-- End Profile Section -->
+
 <!-- End Profile Section -->
 
 {% endblock %}

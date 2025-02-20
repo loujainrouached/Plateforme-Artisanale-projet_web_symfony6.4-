@@ -1,0 +1,98 @@
+{% extends 'baseBack.html.twig' %}
+
+{% block title %}Gestion des Commentaires{% endblock %}
+
+{% block content %}
+    <div class="page-inner">
+    
+        <div class="page-header">
+            <h3 class="fw-bold mb-3">Gestion des Commentaires</h3>
+            <ul class="breadcrumbs mb-3">
+                <li class="nav-home">
+                    <a href="{{ path('admin_comments') }}">
+                        <i class="icon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Comment</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <div class="card-header d-flex align-items-center">
+                <h4 class="card-title">Liste des Commentaires</h4>
+            </div>
+
+            <div class="table-responsive">
+                <table id="comments-table" class="display table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Utilisateur</th>
+                            <th>Article</th>
+                            <th>Commentaire</th>
+                            <th>Date</th>
+                                                        <th>Rating</th>
+
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for comment in comments %}
+                            <tr>
+                                <td>{{ comment.id }}</td>
+                                <td>{{ comment.user.name ?? 'Utilisateur anonyme' }}</td>
+                                <td>{{ comment.article.titre }}</td>
+                                <td>{{ comment.contenuComment|slice(0, 30) ~ '...' }}</td>
+                                <td>{{ comment.dateCom|date('Y-m-d H:i') }}</td>
+                                                                <td>{{ comment.rating}}</td>
+
+                                <td class="text-center">
+                                    <div class="d-flex gap-2">
+                                        <!-- Bouton Modifier -->
+                                       
+  <button type="button"
+        class="btn btn-link btn-danger delete-btn"
+    href="{{ path('delete_comment', {'id': comment.id}) }}"   onclick="return confirm('Voulez-vous vraiment supprimer ce commentaire ?');">
+     
+    <i class="fa fa-times"></i>
+</button>
+ {#                                        <!-- Bouton Supprimer -->
+ <a href="{{ path('delete_comment', {'id': comment.id}) }}"  class="btn btn-link btn-danger" onclick="return confirm('Voulez-vous vraiment supprimer ce commentaire ?');">
+            <i class="fa fa-trash"></i> Delete
+        </a> #}
+        {#  <button  href="{{ path('delete_comment', {'id': comment.id}) }}" type="submit"
+                    class="btn btn-link btn-danger"
+                    data-bs-toggle="tooltip"
+                    title="Supprimer l'article"
+            >
+                <i class="fa fa-times"></i>
+            </button> #}
+
+
+
+ {#                                       <a href="{{ path('delete_comment', {'id': comment.id}) }}" 
+   class="btn btn-danger btn-sm"
+   onclick="return confirm('Voulez-vous vraiment supprimer ce commentaire ?');">
+    <i class="fas fa-trash"></i> Supprimer
+</a> #}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center">Aucun commentaire trouvé</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    
+ {% endblock %}

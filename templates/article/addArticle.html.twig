@@ -1,0 +1,93 @@
+{% extends 'baseback.html.twig' %}
+
+{% block title %}Ajouter un Article{% endblock %}
+
+{% block content %}
+    <div class="page-inner">
+        <div class="page-header">
+            <h3 class="fw-bold mb-3">Ajouter un article</h3>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Ajouter un nouvel article</h4>
+            </div>
+
+            <div class="card-body">
+                <form method="POST" action="{{ path('add_article') }}" enctype="multipart/form-data" novalidate>
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+                    <!-- ✅ Titre -->
+                    <div class="form-group">
+                        {{ form_label(form.titre, 'Titre', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.titre, {'attr': {'class': 'form-control'}}) }}
+                        {% for error in form.titre.vars.errors %}
+                            <div class="text-danger">{{ error.message }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- ✅ Contenu -->
+                    <div class="form-group">
+                        {{ form_label(form.contenu, 'Contenu', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.contenu, {'attr': {'class': 'form-control', 'rows': '4'}}) }}
+                        {% for error in form.contenu.vars.errors %}
+                            <div class="text-danger">{{ error.message }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- ✅ Date de publication -->
+                    <div class="form-group">
+                        {{ form_label(form.datepub, 'Date de publication', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.datepub, {'attr': {'class': 'form-control', 'readonly': 'readonly'}}) }}
+                    </div>
+
+                    <!-- ✅ Image -->
+                    <div class="form-group">
+                        {{ form_label(form.image, 'Image', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.image, {'attr': {'class': 'form-control'}}) }}
+
+                        {% if article is defined and article.image %}
+                            <div class="mt-2">
+                                <img src="{{ asset('/assets/back-office/images/' ~ article.image) }}" alt="Image actuelle" style="max-width: 150px;">
+                            </div>
+                        {% endif %}
+
+                        {% for error in form.image.vars.errors %}
+                            <div class="text-danger">{{ error.message }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- ✅ Catégorie -->
+                    <div class="form-group">
+                        {{ form_label(form.categorie, 'Catégorie', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.categorie, {'attr': {'class': 'form-select'}}) }}
+                        {% for error in form.categorie.vars.errors %}
+                            <div class="text-danger">{{ error.message }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- ✅ Nom de l'Auteur -->
+                    <div class="form-group">
+                        {{ form_label(form.nomAuteur, 'Nom de l\'Auteur', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.nomAuteur, {'attr': {'class': 'form-control'}}) }}
+                        {% for error in form.nomAuteur.vars.errors %}
+                            <div class="text-danger">{{ error.message }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- ✅ Boutons -->
+                    <div class="modal-footer border-0 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-plus"></i> Ajouter
+                        </button>
+                        <a href="{{ path('app_article') }}" class="btn btn-secondary">
+                            <i class="fa fa-times"></i> Annuler
+                        </a>
+                    </div>
+
+                    {{ form_end(form) }}
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

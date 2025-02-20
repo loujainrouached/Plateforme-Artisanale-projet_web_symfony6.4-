@@ -1,0 +1,125 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Update Product{% endblock %}
+
+{% block body %}
+
+<!-- search area -->
+<div class="search-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <span class="close-btn"><i class="fas fa-window-close"></i></span>
+                <div class="search-bar">
+                    <div class="search-bar-tablecell">
+                        <h3>Search For:</h3>
+                        <input type="text" placeholder="Keywords">
+                        <button type="submit">Search <i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end search area -->
+
+<!-- breadcrumb-section -->
+<div class="breadcrumb-section breadcrumb-bg">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2 text-center">
+                <div class="breadcrumb-text">
+                    <p>Update your product details below</p>
+                    <h1>Update your product and keep your store up to date! ✨🛍️</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end breadcrumb section -->
+
+<!-- form update produit -->
+<section class="section dashboard">
+    <div class="container mt-5 mb-5">
+        <div class="col-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-description">
+                        Update the details of your product
+                    </h3>
+
+                    {{ form_start(formProduit, {'attr': {'novalidate': 'novalidate'}}) }}
+                    
+                   
+                  <div class="form-group">
+    {{ form_label(formProduit.name, 'Product Name', {'label_attr': {'class': 'form-label'}}) }}
+    {{ form_widget(formProduit.name, {'attr': {'placeholder': 'Enter product name...', 'class': 'form-control'}}) }}
+    
+    {# Affichage des erreurs sous le champ #}
+    {% for error in formProduit.name.vars.errors %}
+        <div class="text-danger">{{ error.message }}</div>
+    {% endfor %}
+</div>
+
+                    <div class="form-group">
+                        {{ form_label(formProduit.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(formProduit.description, {'attr': {'placeholder': 'Enter product description...', 'class': 'form-control'}}) }}
+                        {% for error in formProduit.description.vars.errors %}
+                            <div class="text-danger">{{ error.message }}</div>
+                        {% endfor %}
+                    </div>
+
+                    {# <div class="form-group">
+                        {{ form_label(formProduit.stock, 'Quantity', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(formProduit.stock, {'attr': {'placeholder': 'Enter quantity...', 'class': 'form-control'}}) }}
+                        {% for error in formProduit.stock.vars.errors %}
+                            <div class="text-danger">{{ error.message }}</div>
+                        {% endfor %}
+                    </div> #}
+
+                    <div class="form-group">
+                        {{ form_label(formProduit.price, 'Price', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(formProduit.price, {'attr': {'placeholder': 'Enter price...', 'class': 'form-control'}}) }}
+                        {% for error in formProduit.price.vars.errors %}
+                            <div class="text-danger">{{ error.message }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form_label(formProduit.image, 'Product Image', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(formProduit.image, {'attr': {'placeholder': 'Upload product image...', 'class': 'form-control'}}) }}
+                        {% for error in formProduit.image.vars.errors %}
+                            <div class="text-danger">{{ error.message }}</div>
+                        {% endfor %}
+                    </div>
+
+                 <div class="form-group">
+    {{ form_label(formProduit.category, 'Category', {'label_attr': {'class': 'form-label'}}) }}
+    {{ form_widget(formProduit.category, {'attr': {'placeholder': 'Enter product category...', 'class': 'form-control'}}) }}
+    {% for error in formProduit.category.vars.errors %}
+        <div class="text-danger">{{ error.message }}</div>
+    {% endfor %}
+</div>
+
+
+                    <style>
+                        .btn-orange {
+                            background-color: orange;
+                            border-color: orange;
+                        }
+                    </style>
+ <div class="col-lg-8 offset-lg-2 text-center">
+                        <div class="breadcrumb-text">
+                            <button type="submit" class="btn btn-orange mr-2">Update Product</button>
+                        </div>
+                    </div>
+
+                    {{ form_end(formProduit) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end form update produit -->
+
+{% endblock %}

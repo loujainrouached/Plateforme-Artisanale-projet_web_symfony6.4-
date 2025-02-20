@@ -21,24 +21,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Le nom est obligatoire.")]
+    #[Assert\Regex(
+        pattern: "/^[A-ZÀ-Ÿ][\p{L}\s]*$/u",
+        message: "Author name must start with a capital letter and contain only letters and spaces."
+    )]
+    #[Assert\NotBlank(message: "The name is required.")]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Le prénom est obligatoire.")]
+    #[Assert\Regex(
+        pattern: "/^[A-ZÀ-Ÿ][\p{L}\s]*$/u",
+        message: "Author name must start with a capital letter and contain only letters and spaces."
+    )]
+    #[Assert\NotBlank(message: "The Lastname is required.")]
     private ?string $lastname = null;
 //************************************************ */
     #[ORM\Column]
     private ?array $roles = [];
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Le mot de passe est obligatoire.")]
-    #[Assert\Length(min: 8, minMessage: "Votre mot de passe doit contenir au moins {{ limit }} caractères.")]
+    #[Assert\NotBlank(message: "The password is required.")]
+    #[Assert\Length(min: 8, minMessage: "Your password have to contain at least {{ limit }} leters.")]
         private ?string $password = '';
      
      #[ORM\Column(length:255,unique:true)]
-    #[Assert\NotBlank(message: "L'email est obligatoire.")]
-#[Assert\Email( message: "L'email '{{ value }}' n'est pas valide.")]
+    #[Assert\NotBlank(message: "The l'Email is required.")]
+#[Assert\Email( message: "L'Email '{{ value }}' is not valid.")]
     private ?string $email = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -94,7 +102,7 @@ public function getRoles(): array
 {
     $roles = $this->roles;
     // guarantee every user at least has ROLE_USER
-    $roles[] = 'ROLE_USER';
+    $roles[] = '';
 
     return array_unique($roles);
 }

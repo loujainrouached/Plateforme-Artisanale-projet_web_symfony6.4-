@@ -1,0 +1,183 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <!-- breadcrumb-section -->
+    <div class="breadcrumb-section breadcrumb-bg">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 offset-lg-2 text-center">
+                    <div class="breadcrumb-text">
+                        <p>Where Art Meets Passion – Fill Your Cart!</p>
+                        <h1>My Cart</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   <style>
+   /* Centre le message et augmente la taille de la police */
+.alert-custom {
+    text-align: center; /* Centre le texte */
+    font-size: 1.5rem; /* Augmente la taille du texte */
+    font-weight: bold; /* Gras */
+    padding: 15px 30px; /* Augmente l'espace autour du texte */
+    margin: 10px 0; /* Un peu d'espace autour de l'alerte */
+}
+
+/* Style pour les alertes success */
+.alert-success.custom-success {
+    background-color: #d4edda; /* Vert clair */
+    border-color: #c3e6cb; /* Bordure verte */
+    color: #155724; /* Texte vert foncé */
+}
+
+/* Style pour les alertes info */
+.alert-info.custom-info {
+    background-color: #cce5ff; /* Bleu clair */
+    border-color: #b8daff; /* Bordure bleue */
+    color: #004085; /* Texte bleu foncé */
+}
+
+/* Style pour les alertes error */
+.alert-danger.custom-danger {
+    background-color: #f8d7da; /* Rouge clair */
+    border-color: #f5c6cb; /* Bordure rouge */
+    color: #721c24; /* Texte rouge foncé */
+}
+</STYLE>
+  {# Affichage des messages flash pour les alertes #}
+{% for message in app.flashes('success') %}
+    <div class="alert alert-success alert-custom custom-success alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+{% endfor %}
+
+{% for message in app.flashes('info') %}
+    <div class="alert alert-info alert-custom custom-info alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+{% endfor %}
+
+{% for message in app.flashes('error') %}
+    <div class="alert alert-danger alert-custom custom-danger alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+{% endfor %}
+
+
+    <!-- end breadcrumb section -->
+
+    <!-- cart -->
+    <div class="cart-section mt-150 mb-150">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-12">
+                    <div class="cart-table-wrap">
+                        <table class="cart-table">
+                            <thead class="cart-table-head">
+                                <tr class="table-head-row">
+                                    <th class="product-remove"></th>
+                                    <th class="product-image">Image</th>
+                                    <th class="product-name">Name</th>
+                                    <th class="product-quantity">Quantity</th>
+                                      <th class="product-price">Price</th>
+                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% set total = 0 %}
+                                {% for product in panier.products %}
+                                    <tr class="table-body-row">
+  
+                                     
+                                        <td class="product-remove">
+                                            <a href="{{ path('delete_productFromCart', {id: product.id}) }}"><i class="far fa-window-close"></i></a>
+                                        </td>
+                                                                <style>
+    .product-image {
+        width: 100px; /* Largeur fixe */
+        height: 100px; /* Hauteur fixe */
+        object-fit: cover; /* Cela permet de couper l'image pour qu'elle s'ajuste sans déformation */
+        border-radius: 8px; /* Optionnel, pour avoir des bords arrondis */
+    }
+</style>
+
+<td>
+    {% if product.image %}
+        <img src="{{ asset(product.image) }}" alt="{{ product.name }}" class="product-image">
+    {% else %}
+        Aucune image
+    {% endif %}
+</td>
+                                        <td class="product-name">{{ product.name }}</td>
+                                        <td class="product-quantity">
+                                          {{ product.stock}} </td>
+                                      
+                                         <td class="product-price">{{ product.price }} TND</td>
+                                    </tr>
+                                    {% set total = total + product.price %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="total-section">
+                        <table class="total-table">
+                            <thead class="total-table-head">
+                                <tr class="table-total-row">
+                                    <th>Total</th>
+                                    <th>Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="total-data">
+                                    <td><strong>Subtotal:</strong></td>
+                                    <td>{{ total }} TND</td>
+                                </tr>
+                                <tr class="total-data">
+                                    <td><strong>Shipping:</strong></td>
+                                    <td>10 TND</td>
+                                </tr>
+                                <tr class="total-data">
+                                    <td><strong>Total:</strong></td>
+                                    <td>{{ total + 10 }} TND</td>
+                                </tr>
+                            </tbody>
+                        </table>
+{#   <div class="cart-buttons">
+    <!-- Le bouton génère l'URL de la route 'order_cart' avec l'ID du panier passé dans l'URL -->
+    <a href="{{ path('order_cart', {'cartId': cart.id}) }}" class="boxed-btn black">Checkout</a>
+</div>  #}
+<div class="cart-buttons">
+    <a href="{{ path('order_cart', {'cartId': panier.id}) }}" class="boxed-btn black">Checkout</a>
+</div>
+
+                    </div>
+
+                    <div class="coupon-section">
+                        <h3>Apply Coupon</h3>
+                        <div class="coupon-form-wrap">
+                            <form action="#">
+                                <p><input type="text" placeholder="Coupon"></p>
+                                <p><input type="submit" value="Apply"></p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end cart -->
+
+{% endblock %}

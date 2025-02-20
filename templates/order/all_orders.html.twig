@@ -1,0 +1,124 @@
+{% extends 'baseBack.html.twig' %}
+
+{% block content %}
+
+
+
+
+
+  <body>
+    <div class="wrapper">
+        <div class="container">
+          <div class="page-inner">
+            <div class="page-header">
+              <h3 class="fw-bold mb-3">Orders Management</h3>
+              <ul class="breadcrumbs mb-3">
+                <li class="nav-home">
+                  <a href="#">
+                    <i class="icon-home"></i>
+                  </a>
+                </li>
+                <li class="separator">
+                  <i class="icon-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                  <a href="#">Orders</a>
+                </li>
+              </ul>
+            </div>
+            
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-header">
+                  <div class="d-flex align-items-center">
+                    <h4 class="card-title">List of Orders</h4>
+                  </div>
+                </div>
+                
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="display table table-striped table-hover">
+                      <thead>
+                        <tr>
+                          <th>Order ID</th>
+                          <th>Customer</th>
+                          <th>Delivery Address</th>
+                          <th>Phone Number</th>
+                          <th>Order Date</th>
+                          <th>Order History</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for order in orders %}
+                          <tr>
+                            <td>{{ order.id }}</td>
+                            <td>{{ order.user.email }}</td>
+                            <td>{{ order.deliveryAdress|slice(0, 14) ~'...' }}</td>
+                            <td>{{ order.phoneNumber }}</td>
+                            <td>{{ order.DateOrder|date('Y-m-d H:i:s') }}</td>
+                            <td>
+                              <span class="badge bg-{{ order.orderHistory == 'Completed' ? 'success' : 
+                                                     order.orderHistory == 'Pending' ? 'warning' : 
+                                                     order.orderHistory == 'Cancelled' ? 'danger' : 'info' }}">
+                                {{ order.orderHistory|slice(0, 14) ~'...' }}
+                              </span>
+                            </td>
+                            <td>
+                        
+    <div class="btn-group">
+        <a href="#" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#orderDetails{{ order.id }}">
+            <i class="fa fa-eye"></i> View
+        </a>
+        <a href="{{ path('admin_delete_order', {'id': order.id, 'token': csrf_token('delete-order' ~ order.id)}) }}" 
+           class="btn btn-danger btn-sm ms-2"
+           onclick="return confirm('Are you sure you want to delete this order?')">
+            <i class="fa fa-trash"></i> Delete
+        </a>
+    </div>
+</td>
+                          </tr>
+
+                          <!-- Order Details Modal -->
+                          <div class="modal fade" id="orderDetails{{ order.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h5 class="modal-title">Order Details #{{ order.id }}</h5>
+                                  <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                    <span>&times;</span>
+                                  </button>
+                                </div>
+                                <div class="modal-body">
+                                  <div class="row">
+                                    <div class="col-md-6">
+                                      <p><strong>Customer:</strong> {{ order.user.email }}</p>
+                                      <p><strong>Phone:</strong> {{ order.phoneNumber }}</p>
+                                      <p><strong>Address:</strong> {{ order.deliveryAdress }}</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                      <p><strong>Order Date:</strong> {{ order.DateOrder|date('Y-m-d H:i:s') }}</p>
+                                      <p><strong>Order History:</strong> {{ order.orderHistory }}</p>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  
+{% endblock %}

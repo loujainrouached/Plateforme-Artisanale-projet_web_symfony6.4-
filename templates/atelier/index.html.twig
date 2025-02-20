@@ -58,7 +58,7 @@
                                 <span class="type"><i class="fas fa-tag"></i> {{ workshop.type }}</span>
                                 <span class="location"><i class="fas fa-map-marker-alt"></i> {{ workshop.location }}</span>
                             </p>
-                            <p class="excerpt">  {{ workshop.description|split('.')[:1]|join('.') ~ '...' }}</p>
+                            <p class="excerpt">  {{ workshop.description|slice(0, 100) ~'...'}}</p>
 						
   
 

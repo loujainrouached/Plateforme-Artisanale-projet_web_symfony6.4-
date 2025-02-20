@@ -34,7 +34,7 @@ class UserType extends AbstractType
             $builder
             ->add('roles', ChoiceType::class, [
                 'choices'  => [
-                    'Client' => 'ROLE_USER',
+                    'Client' => 'ROLE_CLIENT',
                     'Artiste' => 'ROLE_ARTISTE',
                 ],
                 'mapped' => false,
@@ -48,8 +48,8 @@ class UserType extends AbstractType
                 ])
                 ->add('confirmPassword', PasswordType::class, [
                     'mapped' => false,
-                    'constraints' => [new Assert\NotBlank(['message' => 'Veuillez confirmer votre mot de passe.'])],
-                    'attr' => ['class' => 'form-control', 'placeholder' => 'Confirmez votre mot de passe'],
+                    'constraints' => [new Assert\NotBlank(['message' => 'you have toConfirm your password.'])],
+                    'attr' => ['class' => 'form-control', 'placeholder' => 'Confirm your password'],
                 ])
                 
 ->add('dateCreation', DateTimeType::class, [

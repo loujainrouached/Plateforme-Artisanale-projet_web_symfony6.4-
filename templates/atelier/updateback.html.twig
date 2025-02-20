@@ -951,7 +951,9 @@
                                 <div class="form-group">
                                     {{ form_label(form.date, 'Date') }}
                                     {{ form_widget(form.date, {'attr': {'class': 'form-control'}}) }}
-                                    {{ form_errors(form.date) }}
+                                   {% for error in form.date.vars.errors %}
+        <div class="text-danger">{{ error.message }}</div>
+    {% endfor %}
                                 </div>
                                 <div class="form-group">
                                     {{ form_label(form.type, 'Type') }}

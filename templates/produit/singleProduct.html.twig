@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails du Produit{% endblock %}
+
+{% block body %}
+
+	<!-- search area -->
+	<div class="search-area">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12">
+					<span class="close-btn"><i class="fas fa-window-close"></i></span>
+					<div class="search-bar">
+						<div class="search-bar-tablecell">
+							<h3>Rechercher :</h3>
+							<input type="text" placeholder="Mots-clés">
+							<button type="submit">Rechercher <i class="fas fa-search"></i></button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- end search area -->
+	
+	<!-- breadcrumb-section -->
+	<div class="breadcrumb-section breadcrumb-bg">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8 offset-lg-2 text-center">
+					<div class="breadcrumb-text">
+						<p>Discover the product</p>
+						<h1>{{ product.name }}</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- end breadcrumb section -->
+	
+<!-- single product -->
+<div class="single-product mt-150 mb-150">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-5">
+                <div class="single-product-img">
+                    <img src="{{ asset(product.image) }}" alt="{{ product.name }}" class="img-fluid">
+                </div>
+            </div>
+            <div class="col-md-7">
+                <div class="single-product-content">
+                    <h3>{{ product.name }}</h3>
+                    <p class="single-product-description">{{ product.description }}</p>
+                    <span class="price">Prix: {{ product.price }} TND</span>
+					<div class="single-product-form">
+                     
+                    </div>
+                    <h4>Partager :</h4>
+                    <ul class="product-share">
+                        <li><a href=""><i class="fab fa-facebook-f"></i></a></li>
+                        <li><a href=""><i class="fab fa-twitter"></i></a></li>
+                        <li><a href=""><i class="fab fa-instagram"></i></a></li>
+                        <li><a href=""><i class="fab fa-linkedin"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end single product -->
+
+<!-- related products -->
+<div class="more-products mb-150">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-8 offset-lg-2 text-center">
+				<div class="section-title">	
+					<h3><span class="orange-text">Similar</span> Products</h3>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+		{% for related_product in related_products %}
+    <div class="col-lg-4 col-md-6 text-center">
+        <div class="single-product-item">
+            <div class="product-image">
+                <a href="{{ path('product_details', {'id': related_product.id}) }}">
+                    <img src="{{ asset(related_product.image) }}" alt="{{ related_product.name }}">
+                </a>
+            </div>
+            <h3>{{ related_product.name }}</h3>
+            <p class="product-price">{{ related_product.price }} TND</p>
+
+            </a>
+        </div>
+    </div>
+{% endfor %}
+
+		</div>
+	</div>
+</div>
+<!-- end related products -->
+
+{% endblock %}

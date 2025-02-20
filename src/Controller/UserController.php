@@ -27,7 +27,9 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 // Reservation
 use Symfony\Component\Form\FormError;
 use App\Form\ReservationType;
+use App\Form\OrderType;
 use App\Repository\ReservationRepository;  // <-- Add this line
+use App\Repository\OrderRepository;  
 
 
 
@@ -80,9 +82,28 @@ final class UserController extends AbstractController
             'controller_name' => 'UserController',
         ]);
     }
-    $hashedPassword = $passwordHasher->hashPassword($user, $user->getPassword());
-    $user->setPassword($hashedPassword);
+  /*   $hashedPassword = $passwordHasher->hashPassword($user, $user->getPassword());
+    $user->setPassword($hashedPassword); */
 
+
+
+    $newPassword = $form->get('password')->getData();
+    $confirmPassword = $form->get('confirmPassword')->getData();
+
+    // Only update password if a new one is entered
+    if (!empty($newPassword)) {
+        $hashedPassword = $passwordHasher->hashPassword($user, $newPassword);
+        
+        $hashedPassworddd = $passwordHasher->hashPassword($user, $confirmPassword);
+        
+        if ($newPassword !== $confirmPassword) {
+            $form->get('confirmPassword')->addError(new FormError('Les mots de passe ne correspondent pas.'));
+            return $this->render("user/addBack.html.twig", [
+                'form' => $form->createView(),
+            ]);
+        }
+        $user->setPassword($hashedPassword);
+    }
 
     $photo = $form->get('photo')->getData();
     if ($photo) {
@@ -115,14 +136,14 @@ final class UserController extends AbstractController
 
         $selectedRole = $form->get('roles')->getData();
 
-        if ($selectedRole === 'ROLE_USER') {
-            $user->setRoles(['ROLE_USER']);
+        if ($selectedRole === 'ROLE_CLIENT') {
+            $user->setRoles(['ROLE_CLIENT']);
         } elseif ($selectedRole === 'ROLE_ARTISTE') {
             $user->setRoles(['ROLE_ARTISTE']);
         } elseif ($selectedRole === 'ROLE_ADMIN') {
             $user->setRoles(['ROLE_ADMIN']); 
         } else {
-            $user->setRoles(['ROLE_USER']); 
+            $user->setRoles(['ROLE_CLIENT']); 
         }
 
             $em->persist($user);
@@ -163,12 +184,12 @@ final class UserController extends AbstractController
       $selectedRole = $form->get('roles')->getData();
         
    
-      if ($selectedRole === 'ROLE_USER') {
-          $user->setRoles(['ROLE_USER']);
+      if ($selectedRole === 'ROLE_CLIENT') {
+          $user->setRoles(['ROLE_CLIENT']);
       } elseif ($selectedRole === 'ROLE_ARTISTE') {
           $user->setRoles(['ROLE_ARTISTE']);
       } else {
-          $user->setRoles(['ROLE_USER']); 
+          $user->setRoles(['ROLE_CLIENT']); 
       }
     
             $em->persist($user);
@@ -182,11 +203,15 @@ final class UserController extends AbstractController
     }
     
     #[Route('/profil', name: 'profil')]
-    #[IsGranted('ROLE_ARTISTE')]
-    #[IsGranted('ROLE_USER')]
-    public function profil(ReservationRepository $reservationRepository): Response
+    //#[IsGranted('ROLE_ARTISTE')]
+  //  #[IsGranted('ROLE_CLIENT')]
+    // #[IsGranted('ROLE_ADMIN')]
+    public function profil(ReservationRepository $reservationRepository, OrderRepository $orderRepository): Response
     {
         $user = $this->getUser();
+        
+        $orders = $orderRepository->findBy(['user' => $user]);
+        
         $reservations = $reservationRepository->findBy(['user' => $user]);
         if (!$user) {
             return $this->redirectToRoute('login');
@@ -195,9 +220,11 @@ final class UserController extends AbstractController
         return $this->render('user/profil.html.twig', [
             'user' => $user,
             'reservations' => $reservations,
+            'orders'=> $orders,
         ]);
     }
 
+    
   /*   #[Route('/profil', name: "profil")]
     #[IsGranted('ROLE_USER')]
     public function afficherProfil(): Response
@@ -299,7 +326,7 @@ final class UserController extends AbstractController
             } elseif ($selectedRole === 'ROLE_ADMIN') {
                 $user->setRoles(['ROLE_ADMIN']);
             } else {
-                $user->setRoles(['ROLE_USER']); 
+                $user->setRoles(['ROLE_CLIENT   ']); 
             }
         
    

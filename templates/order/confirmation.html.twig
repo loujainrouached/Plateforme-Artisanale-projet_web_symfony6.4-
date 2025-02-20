@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <h1>Order Confirmation</h1>
+        
+        <div class="confirmation-details">
+            <h2>Thank you for your order!</h2>
+            <p>Order ID: {{ order.id }}</p>
+            <p>Delivery Address: {{ order.deliveryAdress }}</p>
+            <p>Phone Number: {{ order.phoneNumber }}</p>
+            <p>Total: {{ order.cart.totalPrice }} TND</p>
+        </div>
+    </div>
+{% endblock %}

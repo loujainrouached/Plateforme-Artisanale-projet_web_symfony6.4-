@@ -1,0 +1,176 @@
+
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<!-- Breadcrumb Section -->
+<div class="breadcrumb-section breadcrumb-bg">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2 text-center">
+                <div class="breadcrumb-text">
+                    <p>Your Order, Our Commitment</p>
+                    <h1>Order Confirmation</h1>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+ <style>
+   /* Centre le message et augmente la taille de la police */
+.alert-custom {
+    text-align: center; /* Centre le texte */
+    font-size: 1.5rem; /* Augmente la taille du texte */
+    font-weight: bold; /* Gras */
+    padding: 15px 30px; /* Augmente l'espace autour du texte */
+    margin: 10px 0; /* Un peu d'espace autour de l'alerte */
+}
+
+/* Style pour les alertes success */
+.alert-success.custom-success {
+    background-color: #d4edda; /* Vert clair */
+    border-color: #c3e6cb; /* Bordure verte */
+    color: #155724; /* Texte vert foncé */
+}
+
+/* Style pour les alertes info */
+.alert-info.custom-info {
+    background-color: #cce5ff; /* Bleu clair */
+    border-color: #b8daff; /* Bordure bleue */
+    color: #004085; /* Texte bleu foncé */
+}
+
+/* Style pour les alertes error */
+.alert-danger.custom-danger {
+    background-color: #f8d7da; /* Rouge clair */
+    border-color: #f5c6cb; /* Bordure rouge */
+    color: #721c24; /* Texte rouge foncé */
+}
+</STYLE>
+  {# Affichage des messages flash pour les alertes #}
+{% for message in app.flashes('success') %}
+    <div class="alert alert-success alert-custom custom-success alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+{% endfor %}
+
+{% for message in app.flashes('info') %}
+    <div class="alert alert-info alert-custom custom-info alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+{% endfor %}
+
+{% for message in app.flashes('error') %}
+    <div class="alert alert-danger alert-custom custom-danger alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+{% endfor %}
+  
+
+    <!-- Checkout Section -->
+    <div class="checkout-section mt-150 mb-150">
+        <div class="container">
+            <div class="row">
+
+                <!-- Form Section -->
+                <div class="col-lg-8">
+                    <div class="checkout-accordion-wrap">
+                        <div class="accordion" id="accordionExample">
+                            <div class="card single-accordion">
+                                <div class="card-header" id="headingOne">
+                                    <h5 class="mb-0">
+                                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                            Billing Address
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                    <div class="card-body">
+                                        <div class="billing-address-form">
+                                        
+                                 {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+<div class="form-group">
+    {{ form_label(form.deliveryAdress, 'Delivery Address') }}
+    {{ form_widget(form.deliveryAdress, {'attr': {'class': 'form-control'}}) }}
+    
+    {% for error in form.deliveryAdress.vars.errors %}
+        <div class="text-danger" style="font-size: 12px;">{{ error.message }}</div>
+    {% endfor %}
+</div>
+
+<div class="form-group">
+    {{ form_label(form.phoneNumber, 'Phone Number') }}
+    {{ form_widget(form.phoneNumber, {'attr': {'class': 'form-control'}}) }}
+    
+    {% for error in form.phoneNumber.vars.errors %}
+        <div class="text-danger" style="font-size: 12px;">{{ error.message }}</div>
+    {% endfor %}
+</div>
+
+{% if not form.vars.disabled %}
+    <button type="submit" class="btn btn-secondary" style="background-color: #808080; border-color: #808080;">
+        Confirm Order
+    </button>
+{% endif %}
+
+{{ form_end(form) }}
+
+                                        
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> <!-- End Accordion -->
+                    </div>
+                </div>
+
+                <!-- Order Details Section -->
+                <div class="col-lg-4">
+                    <div class="order-details-wrap">
+                        <table class="order-details">
+                            <thead>
+                                <tr>
+                                    <th>Your Order Details</th>
+                                    <th>Price</th>
+                                </tr>
+                            </thead>
+                            <tbody class="order-details-body">
+                                {% for product in order.cart.products %}
+                                    <tr>
+                                        <td>{{ product.name }}</td>
+                                        <td>{{ product.price }} TND</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tbody class="checkout-details">
+                                <tr>
+                                    <td>Subtotal</td>
+                                    <td>{{ order.cart.totalPrice }} TND</td>
+                                </tr>
+                                <tr>
+                                    <td>Shipping</td>
+                                    <td>10 TND</td>
+                                </tr>
+                                <tr>
+                                    <td>Total</td>
+                                    <td>{{ order.cart.totalPrice + 10 }} TND</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div> <!-- End Row -->
+        </div>
+    </div>
+{% endblock %}

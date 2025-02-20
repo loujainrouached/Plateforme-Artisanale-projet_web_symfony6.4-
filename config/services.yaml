@@ -6,6 +6,8 @@
 parameters:
     profile_pictures_directory: '%kernel.project_dir%/public/uploads/profile_pictures'
     workshop_images_directory: '%kernel.project_dir%/public/images/workshops'
+    product_images_directory: '%kernel.project_dir%/public/images/products'
+    images_directory: '%kernel.project_dir%/public/assets/back-office/images'
 
 services:
     # default configuration for services in *this* file
