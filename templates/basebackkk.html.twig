@@ -1,23 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-
   <head>
-
-{# In your base.html.twig #}
-{% block stylesheets %}
-    {# ... your other stylesheets ... #}
-    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
-{% endblock %}
-
-{% block javascripts %}
-    {# ... your other scripts ... #}
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    {# Make sure your claims management JS is loaded AFTER SweetAlert2 #}
-    <script src="{{ asset('path/to/your/claims-management.js') }}"></script>
-{% endblock %}
-
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Datatables - Kaiadmin Bootstrap 5 Admin Dashboard</title>
+<title>{% block title %}dashboard{% endblock %}</title>
     <meta
       content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
       name="viewport"
@@ -28,9 +13,33 @@
       type="image/x-icon"
     />
 
-    
 
-    <!-- Fonts and icons -->
+{# {% block javascripts %}
+    <script src="{{ asset('assets/back-office/assets/js/plugin/webfont/webfont.min.js') }}"></script>
+    <script>
+      WebFont.load({
+        google: { families: ["Public Sans:300,400,500,600,700"] },
+        custom: {
+          families: [
+            "Font Awesome 5 Solid",
+            "Font Awesome 5 Regular",
+            "Font Awesome 5 Brands",
+            "simple-line-icons",
+          ],
+          urls: ["{{ asset('assets/back-office/assets/css/fonts.min.css') }}"],
+        },
+        active: function () {
+          sessionStorage.fonts = true;
+        },
+      });
+    </script>
+
+    <script src="{{ asset('assets/back-office/assets/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('assets/back-office/assets/js/plugins.min.js') }}"></script>
+    <script src="{{ asset('assets/back-office/assets/js/kaiadmin.min.js') }}"></script>
+{% endblock %} #}
+
+   {#  <!-- Fonts and icons -->
     <script src="{{asset('assets/back-office/assets/js/plugin/webfont/webfont.min.js')}}"></script>
     <script>
       WebFont.load({
@@ -48,36 +57,17 @@
           sessionStorage.fonts = true;
         },
       });
-    </script>
+    </script> #}
 
-    <!-- CSS Files -->
-    <link rel="stylesheet" href="{{asset('assets/back-office/assets/css/bootstrap.min.css')}}" />
-    <link rel="stylesheet" href="{{asset('assets/back-office/assets/css/plugins.min.css')}}" />
-    <link rel="stylesheet" href="{{asset('assets/back-office/assets/css/kaiadmin.min.css')}}" />
-<style>
-/* Target the "Claim Status" dropdown */
-.status-dropdown {
-    background: #f5f5f5;
-    border: 1px solid #ddd;
-    padding: 5px;
-    border-radius: 4px;
-    font-size: 14px;
-    cursor: pointer;
-}
 
-/* Target the "Importance" dropdown */
-.importance-dropdown {
-    background: #f5f5f5;
-    border: 1px solid #ddd;
-    padding: 5px;
-    border-radius: 4px;
-    font-size: 14px;
-    cursor: pointer;
-}
-</style>
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('assets/back-office/assets/css/bootstrap.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/back-office/assets/css/plugins.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/back-office/assets/css/kaiadmin.min.css') }}" />
+        <!-- CSS Just for demo purpose, don't include it in your project -->
 
-    <!-- CSS Just for demo purpose, don't include it in your project -->
-    <link rel="stylesheet" href="{{asset('assets/back-office/assets/css/demo.css')}}" />
+    <link rel="stylesheet" href="{{ asset('assets/back-office/assets/css/demo.css') }}" />
+{% endblock %}
   </head>
   <body>
     <div class="wrapper">
@@ -379,7 +369,15 @@
 
 
 
-           
+
+
+
+            <li class="nav-item">
+                <a data-bs-toggle="collapse" href="#tables4">
+                  <i class="fas fa-table"></i>
+                  <p>Workshops</p>
+                  <span class="caret"></span>
+                </a>
                 
                 <div class="collapse" id="tables4">
                   <ul class="nav nav-collapse">
@@ -600,7 +598,7 @@
                   </ul>
                 </li>
                 <li >
-                 <a
+                <a
                     
                                         href="{{path('reclamation_list')}}"
 
@@ -855,7 +853,7 @@
                   >
                     <div class="avatar-sm">
                       <img
-                        src="{{app.user.photo}}"
+                        src="assets/back-office/assets/img/profile.jpg"
                         alt="..."
                         class="avatar-img rounded-circle"
                       />
@@ -906,206 +904,10 @@
           <!-- End Navbar -->
         </div>
 
-        <div class="container">
-          <div class="page-inner">
-            <div class="page-header">
-              <h3 class="fw-bold mb-3">DataTables.Net</h3>
-              <ul class="breadcrumbs mb-3">
-                <li class="nav-home">
-                  <a href="#">
-                    <i class="icon-home"></i>
-                  </a>
-                </li>
-                <li class="separator">
-                  <i class="icon-arrow-right"></i>
-                </li>
-                <li class="nav-item">
-                  <a href="#">Tables</a>
-                </li>
-                <li class="separator">
-                  <i class="icon-arrow-right"></i>
-                </li>
-                <li class="nav-item">
-                  <a href="#">Datatables</a>
-                </li>
-              </ul>
-            </div>
-            
-            
-            
-
-              <div class="col-md-12">
-                <div class="card">
-                  <div class="card-header">
-                    <div class="d-flex align-items-center">
-                      <h4 class="card-title">Add Row</h4>
-                      <button
-                        class="btn btn-primary btn-round ms-auto"
-                        data-bs-toggle="modal"
-                        data-bs-target="#addRowModal"
-                      >
-                        <i class="fa fa-plus"></i>
-                        Add Row
-                      </button>
-                    </div>
-                  </div>
-                  <div class="card-body">
-<!-- Edit Reclamation Modal -->
-<div class="modal fade" id="rowModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header border-0">
-                <h5 class="modal-title">
-                    <span class="fw-mediumbold">Edit Reclamation</span>
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="rowForm">
-                    <input type="hidden" id="rowId" name="id"> <!-- Store row ID -->
-                    
-                    <div class="mb-3">
-                        <label for="rowSubject" class="form-label">Object</label>
-                        <input type="text" class="form-control" id="rowSubject" name="subject" >
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="rowMessage" class="form-label">Message</label>
-                        <textarea class="form-control" id="rowMessage" name="message" ></textarea>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="rowStatus" class="form-label">Status</label>
-                        <input type="text" class="form-control" id="rowStatus" name="status" >
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="rowMarked" class="form-label">Marked as Important</label>
-                        <input type="text" class="form-control" id="rowMarked" name="is_marked" >
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="rowCreatedAt" class="form-label">Created At</label>
-                        <input type="text" class="form-control" id="rowCreatedAt" name="created_at" readonly>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer border-0">
-                <button type="button" class="btn btn-primary" id="saveRowButton">Update</button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal" id="closeModalButton">Close</button>         </div>
-        </div>
-    </div>
-</div>
-
-
-                    <div class="table-responsive">
-                      <table id="add-row" class="display table table-striped table-hover">
-                        <thead>
-                          <tr>
-                            <th>id Claim</th>
-                            <th>User id</th>
-                            <th>user name</th>
-                        
-                            <th>subject</th>
-                            <th>message</th>
-                            <th>claim status</th>
-                            <th>importance</th>
-                            <th>Created at</th>
-                            <th style="width: 10%">Action</th>
-                          </tr>
-                        </thead>
-                        <tfoot>
-                          <tr>
-                            <th>id Claim</th>
-                            <th>User id</th>
-                            <th>user name</th>
-                            <th>subject</th>
-                            <th>message</th>
-                            <th>claim status</th>
-                            <th>importance</th>
-                            <th>Created at</th>
-                            <th style="width: 10%">Action</th>
-                            
-                            
-
-                          </tr>
-                        </tfoot>
-                        <tbody>
-    {% for reclamation in reclamations %}
-                          
-<!-- No <form> tag needed -->
-<tr data-id="{{ reclamation.id }}">
-    <td>{{ reclamation.id }}</td>
-    <td>{{ reclamation.user.id }}</td>
-    <td>{{ reclamation.user.name }}</td>
-    <td>{{ reclamation.subject }}</td>
-    <td>{{ reclamation.message|slice(0, 20) ~ '...' }}</td>
-
-    <!-- Status Dropdown -->
-    <td>
-        <select name="status" class="form-control status-dropdown" data-id="{{ reclamation.id }}">
-            <option value="open" {% if reclamation.status == 'open' %}selected{% endif %}>Open</option>
-            <option value="in_progress" {% if reclamation.status == 'in_progress' %}selected{% endif %}>In Progress</option>
-            <option value="closed" {% if reclamation.status == 'closed' %}selected{% endif %}>Closed</option>
-        </select>
-    </td>
-
-    <!-- Importance Dropdown -->
-    <td>
-        <select name="importance" class="form-control importance-dropdown" data-id="{{ reclamation.id }}">
-            <option value="1" {% if reclamation.isMarked %}selected{% endif %}>✅ Yes</option>
-            <option value="0" {% if not reclamation.isMarked %}selected{% endif %}>❌ No</option>
-        </select>
-    </td>
-
-    <td>{{ reclamation.createdAt|date('d/m/Y H:i') }}</td>
-                            
-                            <td>
-                              <div class="form-button-action">
-                              <button type="button" data-bs-toggle="tooltip"
-                                  title="Update Claim"
-                                  class="btn btn-link btn-primary btn-lg update-btn"
-                                  data-original-title="Edit Task"
-                                  data-id="{{ reclamation.id }}">
-                    <i class="fa fa-edit"></i> 
-                </button>
-            </form>
-
-
-
-    <form method="post" action="{{ path('reclamation_delete', {'id': reclamation.id}) }}" onsubmit="return confirm('Are you sure?');">
-        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ reclamation.id) }}">
-        <button type="submit" class="btn btn-link btn-danger" data-bs-toggle="tooltip" title="Remove">
-            <i class="fa fa-times"></i>
-        </button>
-    </form>
-
-
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                              {% endfor %}
-
-                        </tbody>
-                      </table>
-                    </div>
-
-
-
-
-
-
-
-
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        
+               {% block body %}
+        <!-- Ce bloc sera remplacé par les fichiers qui étendent baseback.html.twig -->
+        {% endblock %}
 
         <footer class="footer">
           <div class="container-fluid d-flex justify-content-between">
@@ -1331,19 +1133,51 @@
       </div>
       <!-- End Custom template -->
     </div>
-    <!--   Core JS Files   -->
-    <script src="{{asset('assets/back-office/assets/js/core/jquery-3.7.1.min.js')}}"></script>
-    <script src="{{asset('assets/back-office/assets/js/core/popper.min.js')}}"></script>
-    <script src="{{asset('assets/back-office/assets/js/core/bootstrap.min.js')}}"></script>
+   {% block javascripts %}
+
+
+
+     <script src="{{ asset('assets/back-office/assets/js/plugin/webfont/webfont.min.js') }}"></script>
+    <script>
+      WebFont.load({
+        google: { families: ["Public Sans:300,400,500,600,700"] },
+        custom: {
+          families: [
+            "Font Awesome 5 Solid",
+            "Font Awesome 5 Regular",
+            "Font Awesome 5 Brands",
+            "simple-line-icons",
+          ],
+          urls: ["{{ asset('assets/back-office/assets/css/fonts.min.css') }}"],
+        },
+        active: function () {
+          sessionStorage.fonts = true;
+        },
+      });
+    </script>
+
+    <script src="{{ asset('assets/back-office/assets/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('assets/back-office/assets/js/plugins.min.js') }}"></script>
+    <script src="{{ asset('assets/back-office/assets/js/kaiadmin.min.js') }}"></script>
+
+    <!-- Core JS Files -->
+    <script src="{{ asset('assets/back-office/assets/js/core/jquery-3.7.1.min.js') }}"></script>
+    <script src="{{ asset('assets/back-office/assets/js/core/popper.min.js') }}"></script>
+    <script src="{{ asset('assets/back-office/assets/js/core/bootstrap.min.js') }}"></script>
 
     <!-- jQuery Scrollbar -->
-    <script src="{{asset('assets/back-office/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js')}}"></script>
+    <script src="{{ asset('assets/back-office/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js') }}"></script>
+
     <!-- Datatables -->
-    <script src="{{asset('assets/back-office/assets/js/plugin/datatables/datatables.min.js')}}"></script>
+    <script src="{{ asset('assets/back-office/assets/js/plugin/datatables/datatables.min.js') }}"></script>
+
     <!-- Kaiadmin JS -->
-    <script src="{{asset('assets/back-office/assets/js/kaiadmin.min.js')}}"></script>
-    <!-- Kaiadmin DEMO methods, don't include it in your project! -->
-    <script src="{{asset('assets/back-office/assets/js/setting-demo2.js')}}"></script>
+    <script src="{{ asset('assets/back-office/assets/js/kaiadmin.min.js') }}"></script>
+
+    <!-- Kaiadmin DEMO methods (Don't include in production) -->
+    <script src="{{ asset('assets/back-office/assets/js/setting-demo2.js') }}"></script>
+{% endblock %}
+
     <script>
       $(document).ready(function () {
         $("#basic-datatables").DataTable({});
@@ -1396,116 +1230,4 @@
               $("#addPosition").val(),
               $("#addOffice").val(),
               action,
-            ]);
-          $("#addRowModal").modal("hide");
-        });
-      });
-
-
-
-
-document.addEventListener("DOMContentLoaded", function () {
-    console.log("✅ JavaScript loaded!");
-    
-    // ✅ Attach event listener to all update buttons
-    document.querySelectorAll(".update-btn").forEach(button => {
-        button.addEventListener("click", function () {
-            let claimId = this.getAttribute("data-id");
-            let row = this.closest('tr');
-            
-            let statusSelect = row.querySelector(".status-dropdown");
-            let importanceSelect = row.querySelector(".importance-dropdown");
-            
-            if (!statusSelect || !importanceSelect) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Dropdowns not found for this claim.',
-                    confirmButtonColor: '#3085d6'
-                });
-                return;
-            }
-            
-            let newStatus = statusSelect.value;
-            let newImportance = importanceSelect.value;
-            
-            console.log(`🔄 Updating claim ID: ${claimId}`);
-            console.log(`🔹 New Status: ${newStatus}`);
-            console.log(`🔹 New Importance: ${newImportance}`);
-            
-            // Show confirmation dialog
-            Swal.fire({
-                title: 'Update Claim',
-                text: 'Are you sure you want to update this claim?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, update it!',
-                cancelButtonText: 'Cancel'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Show loading state
-                    Swal.fire({
-                        title: 'Updating...',
-                        text: 'Please wait while we update the claim.',
-                        allowOutsideClick: false,
-                        allowEscapeKey: false,
-                        showConfirmButton: false,
-                        didOpen: () => {
-                            Swal.showLoading();
-                        }
-                    });
-                    
-                    // Create FormData for better data handling
-                    const formData = new FormData();
-                    formData.append('id', claimId);
-                    formData.append('status', newStatus);
-                    formData.append('importance', newImportance);
-                    
-                    fetch('/reclamation/update-status', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! status: ${response.status}`);
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        console.log("✅ Server Response:", data);
-                        if (data.success) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Updated!',
-                                text: 'The claim has been updated successfully.',
-                                confirmButtonColor: '#3085d6'
-                            });
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Update Failed',
-                                text: data.message || 'An unknown error occurred.',
-                                confirmButtonColor: '#3085d6'
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        console.error("❌ Fetch error:", error);
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Failed to update the claim: ' + error.message,
-                            confirmButtonColor: '#3085d6'
-                        });
-                    });
-                }
-            });
-        });
-    });
-});
-
-      </script>
-  </body>
-</html>
+]); $("#addRowModal").modal("hide"); });  }); </script> </body> </html>

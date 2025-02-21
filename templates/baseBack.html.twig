@@ -290,13 +290,13 @@
                   <ul class="nav nav-collapse">
                  
                  
-                    <li>
-                      <a href="{{path('app_article')}}">
+                   <li>
+                      <a href="{{path('app_reclamationBack')}}">
                         <span class="sub-item">Reclamation</span>
                       </a>
                     </li>
                     <li>
-                      <a href="{{path('app_comment')}}">
+                      <a href="{{path('back_Reponse')}}">
                         <span class="sub-item">Respond</span>
                       </a>
                     </li>
@@ -534,15 +534,14 @@
                     </form>
                   </ul>
                 </li>
-                <li class="nav-item topbar-icon dropdown hidden-caret">
+                <li >
                   <a
-                    class="nav-link dropdown-toggle"
-                    href="#"
-                    id="messageDropdown"
+                    
+                                        href="{{path('reclamation_list')}}"
+
+                   
                     role="button"
-                    data-bs-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false"
+                  
                   >
                     <i class="fa fa-envelope"></i>
                   </a>

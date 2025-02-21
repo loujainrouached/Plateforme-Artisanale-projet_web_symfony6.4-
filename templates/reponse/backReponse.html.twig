@@ -379,29 +379,10 @@
 
 
 
+
            
                 
-                <div class="collapse" id="tables4">
-                  <ul class="nav nav-collapse">
-                 
-                  {#   <li>
-                      <a href="tables/tables.html">
-                        <span class="sub-item">Basic Table</span>
-                      </a>
-                    </li> #}
-                    <li>
-                      <a href="tables/datatables.html">
-                        <span class="sub-item">Workshop</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="tables/datatables.html">
-                        <span class="sub-item">Inscription</span>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </li>
+               
 
 
 
@@ -855,7 +836,7 @@
                   >
                     <div class="avatar-sm">
                       <img
-                        src="{{app.user.photo}}"
+                        src="assets/back-office/assets/img/profile.jpg"
                         alt="..."
                         class="avatar-img rounded-circle"
                       />
@@ -1005,64 +986,48 @@
                         <thead>
                           <tr>
                             <th>id Claim</th>
+                            <th>id Respond</th>
                             <th>User id</th>
                             <th>user name</th>
-                        
                             <th>subject</th>
                             <th>message</th>
-                            <th>claim status</th>
-                            <th>importance</th>
-                            <th>Created at</th>
-                            <th style="width: 10%">Action</th>
+                            <th>Created at</th>{# 
+                            <th style="width: 10%">Action</th> #}
                           </tr>
                         </thead>
                         <tfoot>
                           <tr>
                             <th>id Claim</th>
+                            <th>id Respond</th>
                             <th>User id</th>
                             <th>user name</th>
                             <th>subject</th>
                             <th>message</th>
-                            <th>claim status</th>
-                            <th>importance</th>
-                            <th>Created at</th>
-                            <th style="width: 10%">Action</th>
+                            <th>Created at</th>{# 
+                            <th style="width: 10%">Action</th> #}
                             
                             
 
                           </tr>
                         </tfoot>
                         <tbody>
-    {% for reclamation in reclamations %}
+                        {% for reclamation in reclamations %}
+
+   {% for reponse in reclamation.reponses %}
                           
 <!-- No <form> tag needed -->
-<tr data-id="{{ reclamation.id }}">
+<tr >
     <td>{{ reclamation.id }}</td>
-    <td>{{ reclamation.user.id }}</td>
-    <td>{{ reclamation.user.name }}</td>
+    <td>{{ reponse.id }}</td>
+    <td>{{ reponse.user.id }}</td>
+    <td>{{ reponse.user.name }}</td>
     <td>{{ reclamation.subject }}</td>
-    <td>{{ reclamation.message|slice(0, 20) ~ '...' }}</td>
+    <td>{{ reponse.message|slice(0, 20) ~ '...' }}</td>
 
-    <!-- Status Dropdown -->
-    <td>
-        <select name="status" class="form-control status-dropdown" data-id="{{ reclamation.id }}">
-            <option value="open" {% if reclamation.status == 'open' %}selected{% endif %}>Open</option>
-            <option value="in_progress" {% if reclamation.status == 'in_progress' %}selected{% endif %}>In Progress</option>
-            <option value="closed" {% if reclamation.status == 'closed' %}selected{% endif %}>Closed</option>
-        </select>
-    </td>
-
-    <!-- Importance Dropdown -->
-    <td>
-        <select name="importance" class="form-control importance-dropdown" data-id="{{ reclamation.id }}">
-            <option value="1" {% if reclamation.isMarked %}selected{% endif %}>✅ Yes</option>
-            <option value="0" {% if not reclamation.isMarked %}selected{% endif %}>❌ No</option>
-        </select>
-    </td>
-
-    <td>{{ reclamation.createdAt|date('d/m/Y H:i') }}</td>
+ 
+    <td>{{ reponse.createdAt|date('d/m/Y H:i') }}</td>
                             
-                            <td>
+                          {#   <td>
                               <div class="form-button-action">
                               <button type="button" data-bs-toggle="tooltip"
                                   title="Update Claim"
@@ -1085,16 +1050,17 @@
 
                                 </button>
                               </div>
-                            </td>
+                            </td> #}
                           </tr>
                               {% endfor %}
-
+ {% endfor %}
                         </tbody>
                       </table>
                     </div>
 
 
 
+                             
 
 
 

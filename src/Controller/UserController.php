@@ -224,6 +224,23 @@ final class UserController extends AbstractController
         ]);
     }
 
+    #[Route('/profilBack', name: 'profil_back')]
+    //#[IsGranted('ROLE_ARTISTE')]
+  //  #[IsGranted('ROLE_CLIENT')]
+    // #[IsGranted('ROLE_ADMIN')]
+    public function profilBack(): Response
+    {
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('login');
+        }
+    
+        return $this->render('user/profilBack.html.twig', [
+            'user' => $user,
+           
+        ]);
+    }
+
     
   /*   #[Route('/profil', name: "profil")]
     #[IsGranted('ROLE_USER')]
