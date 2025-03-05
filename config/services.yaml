@@ -8,6 +8,9 @@ parameters:
     workshop_images_directory: '%kernel.project_dir%/public/images/workshops'
     product_images_directory: '%kernel.project_dir%/public/images/products'
     images_directory: '%kernel.project_dir%/public/assets/back-office/images'
+   # recaptcha_site_key: '%env(NOCAPTCHA_SITEKEY)%'
+    #recaptcha_secret_key: '%env(NOCAPTCHA_SECRET)%'
+  
 
 services:
     # default configuration for services in *this* file

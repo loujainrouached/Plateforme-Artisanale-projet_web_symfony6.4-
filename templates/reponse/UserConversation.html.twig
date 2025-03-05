@@ -1389,7 +1389,7 @@ h5 {
                     <button class="edit-icon" onclick="toggleEdit('message-{{ reponse.id }}')">
                         <i class="fa fa-pencil"></i>
                     </button>
-                        <form action="{{ path('reponse_delete', {'id': reponse.id}) }}" method="POST" style="display: inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce message ?');">
+                        <form action="{{ path('reponse_delete_user', {'id': reponse.id}) }}" method="POST" style="display: inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce message ?');">
         <button type="submit" class="delete-icon">
             <i class="fa fa-trash"></i>
         </button>

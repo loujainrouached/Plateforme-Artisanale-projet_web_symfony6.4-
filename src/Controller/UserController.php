@@ -24,12 +24,17 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-// Reservation
 use Symfony\Component\Form\FormError;
 use App\Form\ReservationType;
 use App\Form\OrderType;
-use App\Repository\ReservationRepository;  // <-- Add this line
+use App\Repository\ReservationRepository;  
 use App\Repository\OrderRepository;  
+
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+
 
 
 
@@ -49,14 +54,20 @@ final class UserController extends AbstractController
     }
     
     #[Route('/backUser', name: 'back_user')]
-    #[IsGranted('ROLE_ADMIN')]
-    public function backUser(UserRepository $userRepository): Response
+   // #[IsGranted('ROLE_ADMIN')]
+    public function backUser(UserRepository $userRepository, Security $security): Response
     {
-        $users = $userRepository->findAll(); // Fetch all users
+        $user = $this->getUser();
+
+        /* if (!$security->isGranted('ROLE_ADMIN')) {
+            return $this->redirectToRoute('profil'); 
+        } */
+        $users = $userRepository->findAll();  
 
         return $this->render('user/backUser.html.twig', [
             'users' => $users,
             'controller_name' => 'UserController',
+            'user'=>$user,
         ]);
        
     }
@@ -107,9 +118,7 @@ final class UserController extends AbstractController
 
     $photo = $form->get('photo')->getData();
     if ($photo) {
-      /*   $originalFilename = pathinfo($photo->getClientOriginalName(), PATHINFO_FILENAME);
-        $safeFilename = $slugger->slug($originalFilename);
-        $newFilename = $safeFilename . '-' . uniqid() . '.' . $photo->guessExtension(); */
+     
         $newFilename = uniqid() . '.' . $photo->guessExtension();
         try {
             $photo->move($this->getParameter('profile_pictures_directory'), $newFilename);
@@ -121,7 +130,7 @@ final class UserController extends AbstractController
     }
 
 
-      /** @var UploadedFile $photoFile */
+     
     /*   $photoFile = $form->get('photoFile')->getData();
       if ($photoFile) {
           $newFilename = uniqid() . '.' . $photoFile->guessExtension();
@@ -157,51 +166,95 @@ final class UserController extends AbstractController
     ]);
 }
 
-    #[Route('/adduser', name: "add_user")]
-    public function addUser(ManagerRegistry $manager, Request $req,UserPasswordHasherInterface $passwordHasher): Response
-    {
-        $em = $manager->getManager();
-        $user = new User();
-        $form = $this->createForm(UserType::class, $user, ['is_edit' => false]); 
-        $form->handleRequest($req);
-    
-        if ($form->isSubmitted() && $form->isValid()) {
-            $confirmPassword = $form->get('confirmPassword')->getData();
-    
-            if ($confirmPassword !== $user->getPassword()) {
-                $form->get('confirmPassword')->addError(new FormError('Les mots de passe ne correspondent pas.'));
-                return $this->render("user/index.html.twig", [
-                    'form' => $form->createView(),
-                ]);
-            }
+#[Route('/adduser', name: "add_user")]
+public function addUser(
+    ManagerRegistry $manager,
+    Request $req,
+    UserPasswordHasherInterface $passwordHasher,
+    MailerInterface $mailer,
+    VerifyEmailHelperInterface $verifyEmailHelper
+): Response {
+    $em = $manager->getManager();
+    $user = new User();
+    $form = $this->createForm(UserType::class, $user, ['is_edit' => false]); 
+    $form->handleRequest($req);
 
-           
+    if ($form->isSubmitted() && $form->isValid()) {
+        $confirmPassword = $form->get('confirmPassword')->getData();
+
+        if ($confirmPassword !== $user->getPassword()) {
+            $form->get('confirmPassword')->addError(new FormError('Les mots de passe ne correspondent pas.'));
+            return $this->render("user/index.html.twig", [
+                'form' => $form->createView(),
+            ]);
+        }
+
         $hashedPassword = $passwordHasher->hashPassword($user, $user->getPassword());
         $user->setPassword($hashedPassword);
-       // $user->setRoles(['ROLE_ADMIN']); 
+        $selectedRole = $form->get('roles')->getData();
+        $user->setRoles([$selectedRole]);
+        $user->setIsVerified(false); // User is not verified initially
 
-      
-      $selectedRole = $form->get('roles')->getData();
+
+        $em->persist($user);
+        $em->flush();
+
+        // Generate the verification link
+        $signatureComponents = $verifyEmailHelper->generateSignature(
+            'verify_email',
+            $user->getId(),
+            $user->getEmail(),
+            ['id' => $user->getId()]
+        );
+
+       
         
-   
-      if ($selectedRole === 'ROLE_CLIENT') {
-          $user->setRoles(['ROLE_CLIENT']);
-      } elseif ($selectedRole === 'ROLE_ARTISTE') {
-          $user->setRoles(['ROLE_ARTISTE']);
-      } else {
-          $user->setRoles(['ROLE_CLIENT']); 
-      }
-    
-            $em->persist($user);
-            $em->flush();
-            return $this->redirectToRoute('login');
-        }
-    
-        return $this->render("user/index.html.twig", [
-            'form' => $form->createView(),
-        ]);
+        // Send email
+        $email = (new TemplatedEmail())
+            ->from('skanderselmi19@gmail.com')
+            ->to($user->getEmail())
+/*             ->subject('Verify Your Email Address')*/   
+            ->subject('Welcome, ' . $user->getName() . '! Verify Your Email 🎉')
+          // ->html(sprintf('<p>Please verify your email by clicking <a href="%s">here</a>.</p>', $signatureComponents->getSignedUrl()));
+           ->htmlTemplate('user/verify_email.html.twig')
+           ->context([
+               'user' => $user,
+               'verification_url' => $signatureComponents->getSignedUrl()
+           ]);
+        $mailer->send($email);
+
+        return $this->redirectToRoute('login');
     }
-    
+
+    return $this->render("user/index.html.twig", [
+        'form' => $form->createView(),
+    ]);
+}
+
+
+
+#[Route('/verify/email', name: 'verify_email')]
+public function verifyEmail(Request $request, VerifyEmailHelperInterface $verifyEmailHelper, ManagerRegistry $manager): Response
+{
+    $em = $manager->getManager();
+    $user = $em->getRepository(User::class)->find($request->query->get('id'));
+
+    if (!$user) {
+        throw $this->createNotFoundException('User not found');
+    }
+
+    try {
+        $verifyEmailHelper->validateEmailConfirmation($request->getUri(), $user->getId(), $user->getEmail());
+        $user->setIsVerified(true);
+        $em->flush();
+
+        return $this->redirectToRoute('login');
+    } catch (VerifyEmailExceptionInterface $exception) {
+        throw new \Exception('Email verification failed.');
+    }
+}
+
+
     #[Route('/profil', name: 'profil')]
     //#[IsGranted('ROLE_ARTISTE')]
   //  #[IsGranted('ROLE_CLIENT')]
@@ -393,11 +446,7 @@ final class UserController extends AbstractController
         return $this->redirectToRoute('profil');
     }
     
-  /*   #[Route('/logout', name: 'app_logout')]
-    public function logout()
-    {
-        throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
-    } */
+  
 
     #[Route('/user/delete/{id}', name: 'delete_account', methods: ['POST'])]
     public function deleteAccount(
@@ -433,8 +482,8 @@ final class UserController extends AbstractController
     }
 
 
-    #[IsGranted('ROLE_ADMIN')]
-    #[Route('/user/delete/{id}', name: 'delete_account', methods: ['POST'])]
+/*     #[IsGranted('ROLE_ADMIN')]
+ */    #[Route('/user/delete/{id}', name: 'delete_account', methods: ['POST'])]
     public function deleteAccountBack(
         Request $request,
         User $user,
@@ -473,6 +522,49 @@ final class UserController extends AbstractController
         // If an admin deleted another user, redirect to user management page
         return $this->redirectToRoute('back_user');
     }
+
+
+/* #[Route('/admin/toggle-ban/{id}', name: 'toggle_ban')]
+public function toggleBanUser(int $id, ManagerRegistry $manager): Response
+{
+    $em = $manager->getManager();
+    $user = $em->getRepository(User::class)->find($id);
+
+    if (!$user) {
+        throw $this->createNotFoundException('User not found.');
+    }
+
+    // Toggle the isBanned status
+    $user->setIsBanned(!$user->getIsBanned());
+    $em->flush();
+
+    return $this->redirectToRoute('back_user'); // Redirect to the user list page
+} */
+
+#[Route('/toggle-ban/{id}', name: 'toggle_ban', methods: ['POST'])]
+public function toggleBan($id, EntityManagerInterface $em, Request $request, CsrfTokenManagerInterface $csrfTokenManager): Response
+{
+    $user = $em->getRepository(User::class)->find($id);
+    
+    if (!$user) {
+        throw $this->createNotFoundException('User not found.');
+    }
+
+    // Verify CSRF Token
+    $token = new CsrfToken('toggle-ban-' . $id, $request->request->get('_token'));
+    if (!$csrfTokenManager->isTokenValid($token)) {
+        throw $this->createAccessDeniedException('Invalid CSRF token.');
+    }
+
+    // Toggle Ban Status
+    $user->setIsBanned(!$user->getIsBanned());
+    $em->persist($user);
+    $em->flush();
+
+    $this->addFlash('success', $user->getIsBanned() ? 'User has been banned.' : 'User has been unbanned.');
+    return $this->redirectToRoute('back_user');
+}
+
 
 
 }

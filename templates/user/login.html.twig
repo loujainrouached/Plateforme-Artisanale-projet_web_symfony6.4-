@@ -31,27 +31,90 @@
         <!-- Username & Password fields -->
         <input type="email" name="email" placeholder="Email" >
         <input type="password" name="password" placeholder="Password" >
+
+        
+
+  <!-- Add reCAPTCHA -->
+{#     <div class="g-recaptcha" data-sitekey="{{ ('recaptcha.site_key') }}"></div>
+ #}
+{# 
+    <div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div> #}
     </div>
-     {% if error %}
-        <p class="text-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</p>
-    {% endif %}
+    
+
+{#   {% if app.session.get('banned') %}
+                <div class="alert alert-danger">
+                    Your account has been banned. Please contact support.
+                </div>
+            {% endif %} #}
+            
+     {#        {% if error %}
+    <div class="alert alert-danger">
+        {{ error }}
+    </div>
+{% endif %}
+ #}
+
+            <!-- Displaying other errors like invalid credentials -->
+            {% for message in app.flashes('error') %}
+                <div class="alert alert-danger">{{ message }}</div>
+            {% endfor %}
+
+            {% if error %}
+                <p class="text-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</p>
+            {% endif %}
 
     <button class="submit-btn">Sign in</button>
 
    
 </form>
+ <div class="extra-links">
+    <a href="{{ path('app_forgot_password_request') }}" class="forgot-password">
+        Forgot Password?
+    </a>
+    <a href="{{ path('add_user') }}" class="sign-up">Sign Up</a>
+</div>
 
+
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <style>
+.text-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
     .alert {
         padding: 10px;
         margin-top: 10px;
         border: 1px solid transparent;
         border-radius: 4px;
     }
-    .alert-danger {
-        color: #a94442;
-        background-color: #f2dede;
-        border-color: #ebccd1;
+ 
+    .extra-links {
+        display: flex;
+        justify-content: center; /* Center links */
+        align-items: center;
+        gap: 20px; /* Space between links */
+        margin-top: 10px;
+    }
+
+    .separator {
+        width: 1px;
+        height: 16px;
+        background-color: #ccc; /* Light gray separator */
+    }
+
+    .extra-links a {
+        text-decoration: none;
+        font-size: 14px;
+        color: #007BFF;
+    }
+
+    .extra-links a:hover {
+        text-decoration: underline;
     }
 </style>
         </div>

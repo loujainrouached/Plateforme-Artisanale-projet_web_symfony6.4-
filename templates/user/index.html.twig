@@ -15,13 +15,14 @@
         <div class="form-container">
            
                 <h1>Create Account</h1>
-                <div class="social-container">
+                <br><br>
+               {#  <div class="social-container">
                     <a href="#" class="social"><ion-icon name="logo-facebook"></ion-icon></a>
                     <a href="#" class="social"><ion-icon name="logo-google"></ion-icon></a>
                     <a href="#" class="social"><ion-icon name="logo-linkedin"></ion-icon></a>
-                </div>
-              <span>or use your email for registration</span>
-{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                </div> #}
+{#               <span>or use your email for registration</span>
+ #}{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
 <div class="form-holder">
     {{ form_widget(form.name, {'attr': {'class': 'input', 'placeholder': 'Name'}}) }}
     {% for error in form.name.vars.errors %}
@@ -58,7 +59,7 @@
     </div>
 </div>
 
-<button class="submit-btn">Sign up</button>
+<button class="submit-btn">Sign up</button> 
 {{ form_end(form) }}
 <style>
     .error-msg {

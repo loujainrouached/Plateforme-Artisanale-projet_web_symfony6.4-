@@ -11,8 +11,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
-#[ORM\Entity(repositoryClass: UserRepository::class)]/* 
-#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])] */
+#[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -55,7 +54,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $dateCreation = null;
 
+    #[ORM\Column(type: 'boolean', options: ['default' => false], nullable: true)]
+    private bool $isBanned = false;
    
+
+    #[ORM\Column(type: 'boolean')]
+    private bool $isVerified = false;
+
+    public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): self
+    {
+        $this->isVerified = $isVerified;
+        return $this;
+    }
 
     public function getId(): ?int
     {
@@ -98,24 +113,37 @@ public function setRoles(array $roles): self
     $this->roles = $roles;
 } */
 
-public function getRoles(): array
+/* public function getRoles(): array
 {
     $roles = $this->roles;
     // guarantee every user at least has ROLE_USER
     $roles[] = '';
 
     return array_unique($roles);
+} */
+
+public function getRoles(): array 
+{
+    return $this->roles ?? [];
 }
+
+public function setRoles(array $roles): static
+{
+    // Ensure only one role is set
+    $this->roles = [reset($roles)];
+    return $this;
+}
+
 
 /**
  * @param list<string> $roles
  */
-public function setRoles(array $roles): static
+/* public function setRoles(array $roles): static
 {
     $this->roles = $roles;
 
     return $this;
-}
+} */
 
 
 
@@ -199,5 +227,16 @@ public function setRoles(array $roles): static
     }
 
 
+    public function getIsBanned(): bool
+{
+    return $this->isBanned;
+}
+
+// Setter
+public function setIsBanned(bool $isBanned): self
+{
+    $this->isBanned = $isBanned;
+    return $this;
+}
 
 }

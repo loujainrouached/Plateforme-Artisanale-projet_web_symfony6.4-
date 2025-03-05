@@ -81,7 +81,7 @@
 						<!-- menu start -->
 						<nav class="main-menu">
 							<ul>
-								<li class="current-list-item"><a href="#">Home</a>
+								<li class=""><a href="#">Home</a>
 									<ul class="sub-menu">
 										<li><a href="index.html">Static Home</a></li>
 										<li><a href="index_2.html">Slider Home</a></li>
@@ -507,8 +507,30 @@
 	
 	
 	
+	
 		
 		{% endblock %}
+		<script>
+    let timeout;
+
+    function resetTimer() {
+        clearTimeout(timeout);
+        timeout = setTimeout(logoutUser, 300000); // 1 min = 60,000ms
+    }
+
+    function logoutUser() {
+        window.location.href = "{{ path('app_logout') }}"; // Redirect to logout route
+    }
+
+    // Reset timer on any activity
+    document.addEventListener("mousemove", resetTimer);
+    document.addEventListener("keypress", resetTimer);
+    document.addEventListener("click", resetTimer);
+    document.addEventListener("scroll", resetTimer);
+
+    resetTimer(); // Start the timer initially
+</script>
+
     </body>
 
 	<!-- footer -->

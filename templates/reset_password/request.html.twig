@@ -1,0 +1,89 @@
+{# {% extends 'base.html.twig' %}
+ #}
+{% block title %}Reset your password{% endblock %}
+
+{% block body %}
+<style>
+    .containerr {
+        max-width: 400px;
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        margin: 50px auto;
+        text-align: center;
+    }
+
+    h1 {
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+        text-align: left;
+    }
+
+    input[type="email"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-bottom: 5px;
+    }
+
+    .error-message {
+        color: red;
+        font-size: 14px;
+        margin-bottom: 10px;
+        text-align: left;
+    }
+
+    button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+</style>
+<br><br>
+<br>
+<br>
+<br>
+
+<div class="containerr">
+    <h2>Reset your password</h2>
+
+    {{ form_start(requestForm, {'attr': {'novalidate': 'novalidate'}}) }}
+
+        {{ form_widget(requestForm.email, {
+            'attr': {'class': 'form-control'}
+        }) }}
+
+        {% for error in requestForm.email.vars.errors %}
+            <div class="error-message">{{ error.message }}</div>
+        {% endfor %}
+
+        <div>
+            <small>
+                Enter your email address, and we will send you a link to reset your password.
+            </small>
+        </div>
+
+        <button type="submit">Send password reset email</button>
+
+    {{ form_end(requestForm) }}
+</div>
+{% endblock %}
+

@@ -17,7 +17,7 @@ class Comment
 
     #[ORM\Column(length: 255)]
      
-    #[Assert\NotBlank(message: 'Le commentaire ne peut pas être vide.')]
+    #[Assert\NotBlank(message: 'comment can not be emplty.')]
    
      
     private ?string $contenuComment = null;
@@ -29,7 +29,8 @@ class Comment
     
     private ?int $rating = null;
 
-    #[ORM\ManyToOne(inversedBy: 'Comment')]
+    #[ORM\ManyToOne(inversedBy: 'Comment', cascade: ['REMOVE'])]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'Comment')]

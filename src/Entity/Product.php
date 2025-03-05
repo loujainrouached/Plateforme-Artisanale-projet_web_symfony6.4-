@@ -58,8 +58,11 @@ class Product
 )]
     private ?string $image = null;
 
-    #[ORM\ManyToOne(inversedBy: 'Products')]
+
+    #[ORM\ManyToOne(inversedBy: 'products')]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private ?User $user = null;
+
 
     /**
      * @var Collection<int, Cart>

@@ -1,3 +1,4 @@
 framework:
     mailer:
-        dsn: '%env(MAILER_DSN)%'
+        dsn: 'smtp://skanderselmi19@gmail.com:gdowzlthlmrmubtg@smtp.gmail.com:587?encryption=tls&auth_mode=login'
+        #dsn: 'smtp://skanderselmi19@gmail.com:zzkmdslbrnnmsgee@smtp.gmail.com:587'

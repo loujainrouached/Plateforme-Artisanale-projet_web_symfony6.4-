@@ -133,26 +133,29 @@
                         >
                           <thead>
                             <tr>
-                      <th>Name</th>
-                      <th>Lastname</th>
+                     <th>Name</th>
+                     <th>Lastname</th>
                       <th>Image</th>
                       <th>Email</th>
                       <th>Role</th>
-                      <th>Password</th>
-                      <th>Created At</th>
-                      <th style="width: 10%">Action</th>
+{# <th>Password</th>
+ #}<th>Created At</th>
+<th>Ban Status</th> {# New Column #}
+<th style="width: 10%">Action</th>
+
                             </tr>
                           </thead>
                           <tfoot>
                             <tr>
-                              <th>Name</th>
-                      <th>Lastname</th>
-                      <th>Image</th>
-                      <th>Email</th>
-                      <th>Role</th>
-                      <th>Password</th>
-                      <th>Created At</th>
-                      <th>Action </th>
+                      <th>Name</th>
+<th>Lastname</th>
+<th>Image</th>
+<th>Email</th>
+<th>Role</th>
+{# <th>Password</th>
+ #}<th>Created At</th>
+<th>Ban Status</th> {# New Column #}
+
                             </tr>
                           </tfoot>
                           
@@ -178,39 +181,56 @@
     {% endif %}
 </td>
                         <td>{{ user.email |slice(0, 8) ~'...'}}</td>
-                        <td>{{ user.roles | join(', ') }}</td>
-                        <td>{{ user.password|slice(0, 14) ~'...' }}</td>
+                        <td>{{ user.roles | join(', ') }}</td>{# 
+                        <td>{{ user.password|slice(0, 14) ~'...' }}</td> #}
                         <td>{{ user.dateCreation|date('Y-m-d') }}</td>
                
-
-                            <td>
-                              <div class="form-button-action">
-                            <button
-    type="button"
-    class="btn btn-link btn-primary btn-lg"
-    data-bs-toggle="tooltip"
-    title="Edit Task"
-    onclick="window.location.href='{{ path('edit_back', {'id': user.id}) }}';"
->
-    <i class="fa fa-edit"></i>
-</button>
+         <td>
+    <form method="post" action="{{ path('toggle_ban', { 'id': user.id }) }}">
+        <input type="hidden" name="_token" value="{{ csrf_token('toggle-ban-' ~ user.id) }}">
+        <button type="submit" class="btn btn-{% if user.isBanned %}danger{% else %}success{% endif %}">
+            {% if user.isBanned %} Unban {% else %} Ban {% endif %}
+        </button>
+    </form>
+</td>
 
 
+                           
+                             <td>
+    <div class="form-button-action">
+        {# Edit button #}
+        <button
+            type="button"
+            class="btn btn-link btn-primary btn-lg"
+            data-bs-toggle="tooltip"
+            title="Edit Task"
+            onclick="window.location.href='{{ path('edit_back', {'id': user.id}) }}';"
+        >
+            <i class="fa fa-edit"></i>
+        </button>
 
-                              <button type="button"
-        class="btn btn-link btn-danger delete-btn"
-        data-bs-toggle="modal"
-        data-bs-target="#confirmDeleteModal"
-        data-user-id="{{ user.id }}"
-        data-csrf-token="{{ csrf_token('delete-account-' ~ user.id) }}">
-    <i class="fa fa-times"></i>
-</button>
+        {# Ban/Unban Toggle Button #}
+      {#   <a 
+            href="{{ path('toggle_ban', {'id': user.id}) }}" 
+            class="btn btn-link btn-warning"
+            title="{{ user.isBanned ? 'Unban User' : 'Ban User' }}"
+        >
+            <i class="fa {{ user.isBanned ? 'fa-unlock' : 'fa-lock' }}"></i>
+        </a> #}
 
+        {# Delete button #}
+        <button type="button"
+            class="btn btn-link btn-danger delete-btn"
+            data-bs-toggle="modal"
+            data-bs-target="#confirmDeleteModal"
+            data-user-id="{{ user.id }}"
+            data-csrf-token="{{ csrf_token('delete-account-' ~ user.id) }}"
+        >
+            <i class="fa fa-times"></i>
+        </button>
+    </div>
+</td>
 
-
-
-                              </div>
-                            </td>
                         
                       </tr>
                   

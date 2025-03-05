@@ -23,6 +23,9 @@ security:
                 password_parameter: password # Should match the form field name
                 default_target_path: app_redirect_by_role
                 enable_csrf: true   
+
+            custom_authenticator: App\Security\LoginFormAuthenticator
+            entry_point: App\Security\LoginFormAuthenticator
                 # authenticator: Symfony\Component\Security\Http\Authentication\UsernamePasswordFormAuthenticator
             logout:
                 path: app_logout

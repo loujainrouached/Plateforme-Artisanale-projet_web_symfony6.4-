@@ -21,10 +21,11 @@ class Reclamation
    /*  #[ORM\ManyToOne(inversedBy: 'reclamations')]
     #[ORM\JoinColumn(nullable: false)] */
 
-#[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'reclamations')]
-#[ORM\JoinColumn(name: "user_id", referencedColumnName: "id", nullable: false)] // ✅ Correct column name
-
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'reclamations')]
+    #[ORM\JoinColumn(name: "user_id", referencedColumnName: "id", nullable: false, onDelete: "CASCADE")] 
     private ?User $user = null;
+
+    
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\NotBlank(message:"Subject is required")]

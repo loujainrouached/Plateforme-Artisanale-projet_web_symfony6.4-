@@ -40,7 +40,7 @@
         <label for="{{ form.name.vars.id }}">Name</label>
         {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Enter Name'}}) }}
         {% for error in form.name.vars.errors %}
-        <small class="error-msg">{{ error.message }}</small>
+        <small class="text-danger error-msg">{{ error.message }}</small>
     {% endfor %}
     </div>
 
@@ -48,7 +48,7 @@
         <label for="{{ form.lastname.vars.id }}">Last Name</label>
         {{ form_widget(form.lastname, {'attr': {'class': 'form-control', 'placeholder': 'Enter Last Name'}}) }}
         {% for error in form.lastname.vars.errors %}
-        <small class="error-msg">{{ error.message }}</small>
+        <small class="text-danger error-msg">{{ error.message }}</small>
     {% endfor %}
     </div>
 
@@ -56,7 +56,7 @@
         <label for="{{ form.email.vars.id }}">Email Address</label>
         {{ form_widget(form.email, {'attr': {'class': 'form-control', 'placeholder': 'Enter Email'}}) }}
          {% for error in form.email.vars.errors %}
-        <small class="error-msg">{{ error.message }}</small>
+        <small class="text-danger error-msg">{{ error.message }}</small>
     {% endfor %}
     </div>
 
@@ -80,7 +80,7 @@
         <label for="{{ form.password.vars.id }}">Password</label>
         {{ form_widget(form.password, {'attr': {'class': 'form-control', 'placeholder': 'Laissez vide pour ne pas changer le mot de passe'}}) }}
          {% for error in form.password.vars.errors %}
-        <small class="error-msg">{{ error.message }}</small>
+        <small class="text-danger error-msg">{{ error.message }}</small>
     {% endfor %}
     </div>
 
@@ -98,7 +98,7 @@
         <label for="{{ form.roles.vars.id }}">Role</label>
         {{ form_widget(form.roles, {'attr': {'class': 'form-select'}}) }}
          {% for error in form.roles.vars.errors %}
-        <small class="error-msg">{{ error.message }}</small>
+        <small class="text-danger error-msg">{{ error.message }}</small>
     {% endfor %}
     </div>
 
@@ -113,7 +113,7 @@
 
     {{ form_widget(form.photo, {'attr': {'class': 'custom-file-input','id':'photoInput'}}) }}
      {% for error in form.photo.vars.errors %}
-        <small class="error-msg">{{ error.message }}</small>
+        <small class="text-danger error-msg">{{ error.message }}</small>
     {% endfor %}
 </div>
 

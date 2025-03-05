@@ -217,7 +217,15 @@ public function deleteUserOrder(
         $this->addFlash('error', 'Order not found for this user');
         return $this->redirectToRoute('profil');
     }
-    
+     // Check if the order is older than 2 days
+     $dateNow = new \DateTime();
+     $dateOrder = $order->getDateOrder();
+     $interval = $dateNow->diff($dateOrder);
+     
+     if ($interval->days > 2) {
+         $this->addFlash('error', 'You can only delete orders that are older than 2 days');
+         return $this->redirectToRoute('profil');
+     }
     try {
         // Retrieve the associated cart
         $cart = $order->getCart();
