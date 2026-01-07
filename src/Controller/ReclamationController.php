@@ -19,7 +19,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-
+use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
+use Symfony\UX\Chartjs\Model\Chart;
 final class ReclamationController extends AbstractController
 {
     #[Route('/reclamation', name: 'ajouter_reclamation')]
@@ -51,7 +52,7 @@ final class ReclamationController extends AbstractController
         ]);
     }
 
-    #[Route('/backReclamation', name: 'app_reclamationBack')]
+/*     #[Route('/backReclamation', name: 'app_reclamationBack')]
     public function backReclamation(ReclamationRepository $reclamationRepository): Response
     {
         $reclamations = $reclamationRepository->findAll();
@@ -60,9 +61,79 @@ final class ReclamationController extends AbstractController
         return $this->render('reclamation/backReclamation.html.twig', [
             'reclamations' => $reclamations, // ✅ Pass reclamations to Twig
         ]);
+    } */
+
+    #[Route('/backReclamation', name: 'app_reclamationBack')]
+    public function backReclamation(ReclamationRepository $reclamationRepository, ChartBuilderInterface $chartBuilder): Response
+    {
+
+            // Calculate new messages count
+            $newMessagesCount = $reclamationRepository->countTodayReclamations();
+            $reclamations = $reclamationRepository->findAll();
+
+        // 1. Prepare data for the chart
+        $data = [
+            'open' => [
+                'marked' => 0,
+                'unmarked' => 0,
+            ],
+            'in_progress' => [
+                'marked' => 0,
+                'unmarked' => 0,
+            ],
+            'closed' => 0, // Just count the total number of closed reclamations
+        ];
+        
+        foreach ($reclamations as $reclamation) {
+            $status = $reclamation->getStatus();
+        
+            if ($status === 'closed') {
+                $data['closed']++; // Increment the closed count
+            } else {
+                $isMarked = $reclamation->isMarked() ? 'marked' : 'unmarked';
+                $data[$status][$isMarked]++;
+            }
+        }
+        
+        // 2. Create the chart
+        $chart = $chartBuilder->createChart(Chart::TYPE_PIE);
+        
+        $chart->setData([
+            'labels' => [
+                'Open - Marked', 'Open - Unmarked',
+                'In Progress - Marked', 'In Progress - Unmarked',
+                'Closed', // Single label for closed reclamations
+            ],
+            'datasets' => [
+                [
+                    'label' => 'Reclamation Status',
+                    'data' => [
+                        $data['open']['marked'], $data['open']['unmarked'],
+                        $data['in_progress']['marked'], $data['in_progress']['unmarked'],
+                        $data['closed'], // Total closed count
+                    ],
+                    // You can customize the colors as needed
+                    'backgroundColor' => [
+                        '#5bc0de', '#9954bb', // Open
+                        '#d9534f', '#f0ad4e', // In Progress
+                        '#5cb85c',             // Closed
+                    ],
+                ],
+            ],
+        ]);
+
+        // 3. Adjust the size (optional)
+        $chart->setOptions([
+            'aspectRatio' => 1.2, // Adjust as needed
+            'radius' => '80%',    // Adjust as needed
+        ]);
+
+        return $this->render('reclamation/backReclamation.html.twig', [
+            'reclamations' => $reclamations,
+            'chart' => $chart,
+            'newMessagesCount' => $newMessagesCount,
+        ]);
     }
-
-
 
     #[Route('/reclamation/delete/{id}', name: 'reclamation_delete', methods: ['POST'])]
 public function delete(Reclamation $reclamation, EntityManagerInterface $entityManager, Request $request): Response

@@ -43,6 +43,12 @@ class Order
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $orderHistory = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $paid = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $paymentIntenId = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -119,5 +125,30 @@ class Order
 
         return $this;
     }
+
+    public function getPaid(): ?string
+    {
+        return $this->paid;
+    }
+
+    public function setPaid(?string $paid): static
+    {
+        $this->paid = $paid;
+
+        return $this;
+    }
+
+    public function getPaymentIntenId(): ?string
+    {
+        return $this->paymentIntenId;
+    }
+
+    public function setPaymentIntenId(?string $paymentIntenId): static
+    {
+        $this->paymentIntenId = $paymentIntenId;
+
+        return $this;
+    }
+
     
 }

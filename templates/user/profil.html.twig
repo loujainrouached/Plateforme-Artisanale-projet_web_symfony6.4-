@@ -86,6 +86,11 @@
                                </a>
        {#   </div> #}
         </li>
+        <li>
+        <a href="{{ path('calendar') }}" class="dropdown-item text success">
+    <i class="fas fa-calendar"></i> Calendar of your reservations
+</a>
+        </li>
     </ul>
 </div>
 
@@ -271,6 +276,12 @@
                                class="btn btn-sm btn-outline-danger">
                                 <i class="fas fa-trash"></i> Delete
                             </a>
+                            <button type="button" class="btn btn-secondary" style="background-color: #808080; border-color: #808080;" onclick="window.location.href='{{ path('order_pdf', {orderId: order.id}) }}'">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-printer me-2" viewBox="0 0 16 16">
+        <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v3a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2V2zm10 0H4v3h8V2zM3 8a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm2 5v1h6v-1H5zm8-2v3H3v-3h10z"/>
+    </svg>
+  Print Order
+</button>
                         </div>
                     </div>
                     </div>

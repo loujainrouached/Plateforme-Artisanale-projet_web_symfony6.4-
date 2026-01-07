@@ -32,6 +32,8 @@
 	<!-- responsive -->
 	<link rel="stylesheet" href="{{asset('assets/front-office/assets/css/responsive.css')}}">
 
+	
+ 
         {% endblock %}
 
         {% block javascripts %}
@@ -81,6 +83,442 @@
 						<!-- menu start -->
 						<nav class="main-menu">
 							<ul>
+							<!-- Sélecteur de langue modifié pour s'aligner dans le menu -->
+    <li class="language-selector">
+        <select id="languageSelect" title="Changer de langue">
+            <option value="fr">FR</option>
+            <option value="en">EN</option>
+            <option value="es">ES</option>
+            <option value="de">DE</option>
+        </select>
+      <button id="translateButton" 
+    class="translate-btn" 
+    style="background-color: black; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 14px; transition: background-color 0.3s, transform 0.2s;">
+    Translate
+</button>
+
+    </li>
+	
+	<li>
+	<a> 	</a>
+	</li><li>
+	<a> 	</a>
+	</li><li>
+	<a> 	</a>
+	</li>
+
+
+	<style>
+/* Style pour le menu principal */
+.menu-items {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menu-items > li {
+    position: relative;
+    margin: 0 5px;
+    padding: 15px 10px;
+}
+
+/* Style pour le sélecteur de langue et le bouton */
+.language-selector {
+    display: flex;
+    align-items: center;
+    margin-left: auto; /* Pousse le sélecteur de langue à droite */
+}
+
+#languageSelect {
+    background-color: transparent;
+    border: 1px solid #ddd;
+    padding: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-right: 8px;
+    height: 32px; /* Hauteur fixe pour s'aligner avec le bouton */
+}
+
+.translate-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+    height: 32px; /* Hauteur fixe pour s'aligner avec le select */
+}
+
+.translate-btn:hover {
+    background-color: #45a049;
+}
+
+/* Style pour les icônes de panier et profil */
+.shopping-cart {
+    font-size: 18px;
+    padding: 0 10px;
+}
+
+/* Style pour mobile */
+@media screen and (max-width: 768px) {
+    .menu-items {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .language-selector {
+        margin-left: 0;
+        padding: 10px 0;
+    }
+    
+    .menu-items > li {
+        width: 100%;
+        padding: 10px 0;
+    }
+}
+</style>
+<!-- Ajoutez ce script juste avant la balise de fermeture </body> -->
+<script>
+   // Dictionnaires pour les textes courants (solution hors ligne)
+const localDictionaries = {
+    'es': {
+        'Accueil': 'Inicio',
+        'Contact': 'Contacto',
+        'À propos': 'Acerca de',
+        'Recherche': 'Búsqueda',
+        'Traduire': 'Traducir',
+        'Traduction en cours...': 'Traducción en progreso...',
+        // Ajouter d'autres traductions courantes ici
+    },
+    'en': {
+        'Accueil': 'Home',
+        'Contact': 'Contact',
+        'À propos': 'About',
+        'Recherche': 'Search',
+        'Traduire': 'Translate',
+        'Traduction en cours...': 'Translation in progress...',
+        // Ajouter d'autres traductions courantes ici
+    },
+    'de': {
+        'Accueil': 'Startseite',
+        'Contact': 'Kontakt',
+        'À propos': 'Über uns',
+        'Recherche': 'Suche',
+        'Traduire': 'Übersetzen',
+        'Traduction en cours...': 'Übersetzung läuft...',
+        // Ajouter d'autres traductions courantes ici
+    }
+};
+
+// Fonction de traduction avec Lingva Translate
+async function translate(text, targetLang) {
+    // Ignorer les textes vides ou uniquement composés d'espaces
+    if (!text || !text.trim()) {
+        return text;
+    }
+    
+    // Ignorer les textes qui ne contiennent que des chiffres et des symboles
+    if (!/[a-zA-Z]/.test(text)) {
+        return text;
+    }
+    
+    // Vérifier d'abord si le texte est dans notre dictionnaire local
+    if (localDictionaries[targetLang] && localDictionaries[targetLang][text]) {
+        return localDictionaries[targetLang][text];
+    }
+    
+    // Liste d'instances Lingva Translate publiques
+    const instances = [
+        'https://lingva.ml/api/v1',
+        'https://lingva.pussthecat.org/api/v1',
+        'https://translate.bus-hit.me/api/v1',
+        'https://lingva.garudalinux.org/api/v1'
+    ];
+    
+    // Fonction pour encoder l'URL correctement
+    function encodeText(text) {
+        return encodeURIComponent(text).replace(/'/g, '%27');
+    }
+    
+    // Essayer chaque instance avec un timeout
+    for (const baseUrl of instances) {
+        try {
+            console.log(`Essai avec l'API: ${baseUrl}`);
+            
+            // Utiliser un signal d'abandon pour le timeout
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000);
+            
+            // Construire l'URL de l'API Lingva
+            const url = `${baseUrl}/auto/${targetLang}/${encodeText(text)}`;
+            
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                },
+                signal: controller.signal
+            });
+            
+            clearTimeout(timeoutId);
+            
+            if (!response.ok) {
+                console.warn(`API ${baseUrl} a échoué avec le statut: ${response.status}`);
+                continue;
+            }
+            
+            const data = await response.json();
+            if (data && data.translation) {
+                return data.translation;
+            }
+        } catch (error) {
+            console.warn(`Erreur avec l'API ${baseUrl}:`, error);
+            // Continuer avec la prochaine instance
+        }
+    }
+    
+    // Tenter une dernière approche avec SimpleTranslate
+    try {
+        const simpleTranslateUrl = `https://simplytranslate.org/api/translate?engine=google&from=auto&to=${targetLang}&text=${encodeURIComponent(text)}`;
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+        
+        const response = await fetch(simpleTranslateUrl, {
+            method: 'GET',
+            signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
+        
+        if (response.ok) {
+            const data = await response.json();
+            if (data && data.translated_text) {
+                return data.translated_text;
+            }
+        }
+    } catch (error) {
+        console.warn('Erreur avec SimplyTranslate:', error);
+    }
+    
+    // Si toutes les options ont échoué, retourner le texte original
+    console.warn('Aucune traduction disponible pour:', text);
+    return text;
+}
+
+// Fonction pour sauvegarder la préférence de langue
+function saveLanguagePreference(lang) {
+    localStorage.setItem('preferredLanguage', lang);
+}
+
+// Fonction pour récupérer la préférence de langue
+function getLanguagePreference() {
+    return localStorage.getItem('preferredLanguage') || 'fr';
+}
+
+// Fonction pour marquer tous les éléments avec du texte pour la traduction
+function markElementsForTranslation() {
+    const elementsToTranslate = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, a, button, label, span, li');
+    
+    elementsToTranslate.forEach(element => {
+        // Ignorer les éléments qui contiennent d'autres éléments à traduire
+        // ou les éléments qui ont déjà été marqués
+        if (
+            element.children.length === 0 && 
+            !element.hasAttribute('data-translate') && 
+            element.textContent.trim().length > 0 &&
+            !element.closest('script') && 
+            !element.closest('style') &&
+            !element.closest('.language-selector') // Éviter de traduire le sélecteur lui-même
+        ) {
+            element.setAttribute('data-translate', '');
+            element.setAttribute('data-original-text', element.textContent);
+        }
+    });
+}
+
+// Fonction pour afficher une notification
+function showNotification(message, isError = false) {
+    // Supprimer toute notification existante
+    const existingNotification = document.getElementById('translation-notification');
+    if (existingNotification) {
+        existingNotification.remove();
+    }
+    
+    const notification = document.createElement('div');
+    notification.id = 'translation-notification';
+    notification.innerHTML = message;
+    notification.style.position = 'fixed';
+    notification.style.top = '20px';
+    notification.style.right = '20px';
+    notification.style.background = isError ? 'rgba(220, 53, 69, 0.9)' : 'rgba(0, 0, 0, 0.7)';
+    notification.style.color = 'white';
+    notification.style.padding = '10px 20px';
+    notification.style.borderRadius = '5px';
+    notification.style.zIndex = '9999';
+    notification.style.maxWidth = '300px';
+    
+    document.body.appendChild(notification);
+    
+    // Supprimer la notification après quelques secondes
+    setTimeout(() => {
+        if (document.getElementById('translation-notification')) {
+            document.getElementById('translation-notification').remove();
+        }
+    }, 5000);
+}
+
+// Fonction pour traduire tous les éléments marqués
+async function translatePage(targetLang) {
+    // Si on revient à la langue d'origine (français)
+    if (targetLang === 'fr') {
+        document.querySelectorAll('[data-translate]').forEach(element => {
+            const originalText = element.getAttribute('data-original-text');
+            if (originalText) {
+                element.textContent = originalText;
+            }
+        });
+        showNotification('Page restaurée en français');
+        return;
+    }
+    
+    // Afficher l'indicateur de chargement
+    showNotification('Traduction en cours...');
+    
+    try {
+        // S'assurer que tous les éléments sont marqués
+        markElementsForTranslation();
+        
+        const elements = document.querySelectorAll('[data-translate]');
+        console.log(`Éléments à traduire trouvés: ${elements.length}`);
+        
+        if (elements.length === 0) {
+            throw new Error('Aucun élément à traduire trouvé sur la page');
+        }
+        
+        // Stocker les traductions en cache pour éviter de traduire plusieurs fois le même texte
+        const translationCache = {};
+        
+        // Traduire par petits lots
+        const batchSize = 3;
+        let successCount = 0;
+        
+        for (let i = 0; i < elements.length; i += batchSize) {
+            const batch = Array.from(elements).slice(i, i + batchSize);
+            
+            await Promise.all(batch.map(async (element) => {
+                const originalText = element.getAttribute('data-original-text');
+                
+                if (originalText && originalText.trim()) {
+                    try {
+                        // Vérifier si la traduction est déjà en cache
+                        if (!translationCache[originalText]) {
+                            translationCache[originalText] = await translate(originalText, targetLang);
+                        }
+                        
+                        element.textContent = translationCache[originalText];
+                        successCount++;
+                        
+                        // Effet visuel pour indiquer la traduction
+                        element.style.transition = 'background-color 0.5s';
+                        element.style.backgroundColor = 'rgba(144, 238, 144, 0.2)';
+                        setTimeout(() => {
+                            element.style.backgroundColor = 'transparent';
+                        }, 500);
+                    } catch (e) {
+                        console.error('Erreur lors de la traduction:', e);
+                    }
+                }
+            }));
+            
+            // Petit délai entre les lots
+            await new Promise(resolve => setTimeout(resolve, 300));
+        }
+        
+        // Notification finale
+        showNotification(`Traduction terminée (${successCount}/${elements.length} éléments traduits)`);
+        
+    } catch (error) {
+        console.error('Erreur lors de la traduction:', error);
+        showNotification('Erreur lors de la traduction: ' + error.message, true);
+    }
+}
+
+// Initialiser dès que le DOM est chargé
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Initialisation du système de traduction');
+    
+    // Marquer les éléments pour la traduction
+    markElementsForTranslation();
+    
+    // Récupérer la langue préférée
+    const savedLanguage = getLanguagePreference();
+    const languageSelect = document.getElementById('languageSelect');
+    if (languageSelect) {
+        languageSelect.value = savedLanguage;
+    }
+    
+    // Configurer le bouton de traduction
+    const translateButton = document.getElementById('translateButton');
+    if (translateButton) {
+        translateButton.addEventListener('click', function() {
+            const targetLang = languageSelect.value;
+            console.log(`Lancement de la traduction vers: ${targetLang}`);
+            saveLanguagePreference(targetLang);
+            translatePage(targetLang);
+        });
+    }
+});
+</script>
+
+<style>
+    /* Style pour le sélecteur de langue et le bouton */
+    .language-selector {
+        margin-left: 10px;
+        display: flex;
+        align-items: center;
+    }
+    
+    #languageSelect {
+        background-color: transparent;
+        border: 1px solid #ddd;
+        padding: 5px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        margin-right: 8px;
+    }
+    
+    .translate-btn {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.3s;
+    }
+    
+    .translate-btn:hover {
+        background-color: #45a049;
+    }
+    
+    /* Style pour mobile */
+    @media screen and (max-width: 768px) {
+        .language-selector {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            margin: 10px 0;
+        }
+    }
+</style>
 								<li class=""><a href="#">Home</a>
 									<ul class="sub-menu">
 										<li><a href="index.html">Static Home</a></li>
@@ -141,13 +579,19 @@
 </li>
 
 							</ul>
+							
 						</nav>
+						
 						<a class="mobile-show search-bar-icon" href="#"><i class="fas fa-search"></i></a>
 						<div class="mobile-menu"></div>
 						<!-- menu end -->
+						
+
 					</div>
 				</div>
+				
 			</div>
+			
 		</div>
 	</div>
 	<!-- end header -->
@@ -506,16 +950,19 @@
 
 	
 	
-	
-	
-		
-		{% endblock %}
-		<script>
+
+
+
+
+
+
+
+ 	<script>
     let timeout;
 
     function resetTimer() {
         clearTimeout(timeout);
-        timeout = setTimeout(logoutUser, 300000); // 1 min = 60,000ms
+        timeout = setTimeout(logoutUser, 3000000); // 1 min = 60,000ms
     }
 
     function logoutUser() {
@@ -529,6 +976,22 @@
     document.addEventListener("scroll", resetTimer);
 
     resetTimer(); // Start the timer initially
+	
+</script> 
+
+
+
+
+
+
+	
+	
+	
+		
+		{% endblock %}
+	
+<script>
+(function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="sDemVfQeMgggcVs39mgJF";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();
 </script>
 
     </body>

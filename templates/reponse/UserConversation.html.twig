@@ -214,7 +214,7 @@
 }
 
 .contacts-outter-wrapper:nth-child(4):after {
-  background-color: #314557;
+  background-color:rgb(87, 49, 49);
 }
 
 .contacts-outter {
@@ -1123,12 +1123,9 @@ h5 {
 <br><br>
 <br>
 <br>
-<br>    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-
+<br>
+<br>
+<br>
 
 <meta name="csrf-token" content="{{ csrf_token('edit-message') }}">
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
@@ -1152,19 +1149,13 @@ h5 {
                     </form>
                    <div class="contacts-outter">
     <ul class="list-unstyled contacts">
-
-
-
-
         {% for reclamation in reclamations %}
-        {% if reclamation.user.id == app.user.id %}
-
             <li data-toggle="tab" data-target="#chat-{{ reclamation.id }}">
-                    <div class="message-count"> 2 </div>
-                
+{#                     <div class="message-count"> 2 </div>
+ #}                
                 <!-- User Image -->
 {#                 <img alt="" class="img-circle medium-image" src="{{ reponse.reclamation.user.imageUrl }}">#}
-                  <img alt="" class="img-circle medium-image" src="{{app.user.photo}}">
+                  <img alt="" class="img-circle medium-image" src="https://bootdey.com/img/Content/avatar/avatar1.png">
 
                 <div class="vcentered info-combo">
                     <h3 class="no-margin-bottom name"> {{ reclamation.user.name }} </h3>
@@ -1177,15 +1168,19 @@ h5 {
 <div class="date-time-container">
     <span class="date">{{ reclamation.createdAt|date('d/m/Y') }}</span>
     <span class="time">{{ reclamation.createdAt|date('H:i A') }}</span>
+    
 </div>
 
 
                     <i class="fa fa-trash-o"></i>
                     <i class="fa fa-paperclip"></i>
                 </div>
+                        <br>
+        <br>
+        
             </li>
- {% endif %}
-    {% endfor %}    </ul>
+        {% endfor %}
+    </ul>
 </div>
 
 
@@ -1215,14 +1210,12 @@ h5 {
     <div class="contacts-outter">
         <ul class="list-unstyled contacts">
             {% for reclamation in reclamations %}
-            
-        {% if reclamation.user.id == app.user.id %}
                 {% if reclamation.status == 'in_progress' %}
                     <li data-toggle="tab" data-target="#chat-{{ reclamation.id }}">
                         <div class="message-count"> 2 </div>
 
                         <!-- User Image -->
-                        <img alt="" class="img-circle medium-image" src="{{app.user.photo}}">
+                        <img alt="" class="img-circle medium-image" src="https://bootdey.com/img/Content/avatar/avatar1.png">
 
                         <div class="vcentered info-combo">
                             <h3 class="no-margin-bottom name"> {{ reclamation.user.name }} </h3>
@@ -1239,7 +1232,6 @@ h5 {
                             <i class="fa fa-paperclip"></i>
                         </div>
                     </li>
-                {% endif %}
                 {% endif %}
             {% endfor %}
         </ul>
@@ -1264,12 +1256,10 @@ h5 {
     <div class="contacts-outter">
         <ul class="list-unstyled contacts warning">
             {% for reclamation in reclamations %}
-            
-        {% if reclamation.user.id == app.user.id %}
                 {% if reclamation.isMarked == 1 %}
                     <li data-toggle="tab" data-target="#chat-{{ reclamation.id }}">
                         <div class="message-count"> 2 </div>
-                        <img alt="" class="img-circle medium-image" src="{{app.user.photo}}">
+                        <img alt="" class="img-circle medium-image" src="https://bootdey.com/img/Content/avatar/avatar1.png">
 
                         <div class="vcentered info-combo">
                             <h3 class="no-margin-bottom name"> {{ reclamation.user.name }} </h3>
@@ -1281,7 +1271,6 @@ h5 {
                             <i class="fa fa-paperclip"></i>
                         </div>
                     </li>
-                {% endif %}
                 {% endif %}
             {% endfor %}
         </ul>
@@ -1301,11 +1290,9 @@ h5 {
     <div class="contacts-outter">
         <ul class="list-unstyled contacts dark">
             {% for reclamation in reclamations %}
-            
-        {% if reclamation.user.id == app.user.id %}
                 {% if reclamation.status == 'closed' %}
                     <li data-toggle="tab" data-target="#chat-{{ reclamation.id }}">
-                        <img alt="" class="img-circle medium-image" src="{{app.user.photo}}">
+                        <img alt="" class="img-circle medium-image" src="https://bootdey.com/img/Content/avatar/avatar1.png">
 
                         <div class="vcentered info-combo">
                             <h3 class="no-margin-bottom name"> {{ reclamation.user.name }} </h3>
@@ -1317,7 +1304,6 @@ h5 {
                             <i class="fa fa-paperclip"></i>
                         </div>
                     </li>
-                {% endif %}
                 {% endif %}
             {% endfor %}
         </ul>
@@ -1336,7 +1322,6 @@ h5 {
 
       <div class="tab-content">
     {% for reclamation in reclamations %}
-    
         <div class="tab-pane message-body" id="chat-{{ reclamation.id }}">
             <div class="message-top">
              {#    <a class="btn btn-success new-message"> 
@@ -1379,8 +1364,8 @@ h5 {
                     {% for reponse in reclamation.reponses %}
                     
                    <div class="message {% if reponse.user.id == app.user.id %}my-message{% else %}info{% endif %}">
-    <img alt="" class="img-circle medium-image" src="{{app.user.photo}}">
-    <div class="message-body">
+    <img alt="" class="img-circle medium-image" 
+<img src="{% if reponse.user.name == 'Support Bot' %}{{ asset('images/bot-avatar.png') }}{% else %}https://bootdey.com/img/Content/avatar/avatar1.png{% endif %}">    <div class="message-body">
         <div class="message-info">
             <div class="message-header">
                 <h4>{{ reponse.user.name }}</h4>
@@ -1389,7 +1374,7 @@ h5 {
                     <button class="edit-icon" onclick="toggleEdit('message-{{ reponse.id }}')">
                         <i class="fa fa-pencil"></i>
                     </button>
-                        <form action="{{ path('reponse_delete_user', {'id': reponse.id}) }}" method="POST" style="display: inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce message ?');">
+                        <form action="{{ path('reponse_delete', {'id': reponse.id}) }}" method="POST" style="display: inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce message ?');">
         <button type="submit" class="delete-icon">
             <i class="fa fa-trash"></i>
         </button>
@@ -1411,7 +1396,8 @@ h5 {
             </div>
         </div>
     </div>
-  
+                                            
+
 </div>
                         <br> <br><br> <br><br> <br>                        
 
@@ -1424,30 +1410,35 @@ h5 {
                     {% endfor %}
                 </div>
 {{ form_start(forms[reclamation.id], {
-    'attr': {'novalidate': 'novalidate'},
-    'action': path('reponse_add_user', {'reclamationId': reclamation.id}),
-    'method': 'POST'
+    'attr': {
+        'novalidate': 'novalidate',
+        'action': path('reponse_add', {'reclamationId': reclamation.id}),
+        'method': 'POST',
+        'class': 'ajax-form',
+        'data-reclamation-id': reclamation.id
+    }
 }) }}
 
 <div class="chat-footer">
     {{ form_widget(forms[reclamation.id].message, {
         'attr': {
-            'class': 'send-message-text',
-            'placeholder': 'Type your message...'
+            'class': 'send-message-text ajax-message-input',
+            'placeholder': 'Type your message...',
+            'id': 'message-input-' ~ reclamation.id,
+            'data-reclamation-id': reclamation.id
         }
     }) }}
 
     <div class="form-error">
-        {{ form_errors(forms[reclamation.id].message) }} <!-- Correctly output the form errors here -->
+        {{ form_errors(forms[reclamation.id].message) }}
     </div>
 
-    <button type="submit" class="send-message-button btn-info">
+    <button type="submit" class="send-message-button btn-info ajax-submit">
         <i class="fa fa-send"></i>
     </button>
 </div>
 
 {{ form_end(forms[reclamation.id]) }}
-
 
             </div>
         </div>
@@ -1469,59 +1460,11 @@ h5 {
 
 
 
-{# 
-            <div class="tab-pane message-body active" id="" >
-                <div class="message-top">
-{#                     <a class="btn btn btn-success new-message"> <i class="fa fa-envelope"></i> New Message </a>
- 
-                    <div class="new-message-wrapper">
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Send message to...">
-                            <a class="btn btn-danger close-new-message" href="#"><i class="fa fa-times"></i></a>
-                        </div>
-
-                        <div class="chat-footer new-message-textarea">
-                            <textarea class="send-message-text"></textarea>
-                            <label class="upload-file">
-                                <input type="file" required="">
-                                <i class="fa fa-paperclip"></i>
-                            </label>
-                            <button type="button" class="send-message-button btn-info"> <i class="fa fa-send"></i> </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="message-chat">
-                    <div class="chat-body">
 
 
-                        <div class="message success">
-                            <img alt="" class="img-circle medium-image" src="https://bootdey.com/img/Content/avatar/avatar1.png">
+           {#  #}
 
-                            <div class="message-body">
-                                <div class="message-info">
-                                    <h4>Bot </h4>
-                                    <h5> <i class="fa fa-clock-o"></i> 2:11 PM </h5>
-                                </div>
-                                <hr>
-                                <div class="message-text">
-       👋 Welcome to your conversations! Start a new chat and engage with your team. Feel free to share any updates or queries!
-                                </div>
-                            </div>
-                            <br>
-                        </div>
 
-                    
-
-                    
-
-                    </div>
-
-                  
-                </div>
-            </div>
-
- #}
 
 
 
@@ -1540,11 +1483,6 @@ h5 {
 
 
     </div>
-    </div>
-    <br>    <br>
-    <br>
-    <br>
-
 
 <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
 <script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -1645,9 +1583,124 @@ function validateJSON(str) {
 }
 
 
+document.addEventListener('DOMContentLoaded', function() {
+    const forms = document.querySelectorAll('.ajax-form');
+    
+    forms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const reclamationId = this.dataset.reclamationId;
+            
+            // More flexible input selection
+            const messageInput = document.querySelector(
+                `#message-input-${reclamationId}, 
+                 .ajax-message-input[data-reclamation-id="${reclamationId}"]`
+            );
+            
+            if (!messageInput) {
+                console.error('Message input not found');
+                return;
+            }
+            
+            const message = messageInput.value.trim();
+            
+            if (!message) {
+                return;
+            }
+            
+            const formData = new FormData(this);
+            
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Clear input
+                    messageInput.value = '';
+                    
+                    // Find the specific chat body for this reclamation
+                    const chatBody = document.querySelector(`#chat-${reclamationId} .chat-body`);
+                    
+                    if (chatBody) {
+                        // Create user message element
+                        const userMessageEl = document.createElement('div');
+                        userMessageEl.className = 'message my-message';
+                        userMessageEl.innerHTML = `
+                            <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="" class="img-circle medium-image">
+                            <div class="message-body">
+                            
+                                <div class="message-info">
+                                
+                                    <div class="message-header">
+                                    
+                                        <h4>You</h4>
+                                        <h5><i class="fa fa-clock-o"></i> ${data.userMessageTime}</h5>
+                                          <button class="edit-icon">
+                        <i class="fa fa-pencil"></i>
+                    </button>
+        <button type="submit" class="delete-icon">
+            <i class="fa fa-trash"></i>
+        </button>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="message-content">
+                                    <div class="message-text">${message}</div>
+                                </div>
+                              
+                            </div>
+                                                    <br> <br>                       
 
+                        `;
+                        
+                        // Append user message
+                        chatBody.appendChild(userMessageEl);
+                        
+                        // Handle bot message if exists
+                        if (data.botMessage) {
+                            const botMessageEl = document.createElement('div');
+                            botMessageEl.className = 'message info';
+                            botMessageEl.innerHTML = `
+<img src="{{ asset('images/bot-avatar.png') }}" alt="Bot Avatar" class="img-circle medium-image">
 
+                                <div class="message-body">
+                                    <div class="message-info">
+                                        <div class="message-header">
+                                            <h4>Support Bot</h4>
+                                            <h5><i class="fa fa-clock-o"></i> ${data.botMessageTime}</h5>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="message-content">
+                                        <div class="message-text">${data.botMessage}</div>
+                                    </div>
+                                </div>
+                                                        <br> <br>                      
 
+                            `;
+                            
+                            // Append bot message
+                            chatBody.appendChild(botMessageEl);
+                        }
+                        
+                        // Scroll to bottom of chat
+                        chatBody.scrollTop = chatBody.scrollHeight;
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while sending the message.');
+            });
+        });
+    });
+});
 
  {#   window.onerror = function(msg, url, lineNo, columnNo, error) {
             console.error('Error: ' + msg + '\nURL: ' + url + '\nLine: ' + lineNo + '\nColumn: ' + columnNo + '\nError object: ' + JSON.stringify(error));

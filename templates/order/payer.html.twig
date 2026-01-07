@@ -1,0 +1,180 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Payment for your order{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .payment-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        #payment-element {
+            margin-bottom: 24px;
+        }
+        
+        #payment-message {
+            color: rgb(105, 115, 134);
+            font-size: 16px;
+            line-height: 20px;
+            padding-top: 12px;
+            text-align: center;
+        }
+        
+        #payment-form button {
+            background: #5469d4;
+            color: #ffffff;
+            border-radius: 4px;
+            border: 0;
+            padding: 12px 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: block;
+            transition: all 0.2s ease;
+            box-shadow: 0px 4px 5.5px 0px rgba(0, 0, 0, 0.07);
+            width: 100%;
+        }
+        
+        #payment-form button:hover {
+            filter: contrast(115%);
+        }
+        
+        #payment-form button:disabled {
+            opacity: 0.5;
+            cursor: default;
+        }
+        
+        /* Updated breadcrumb styles to match the image */
+        .breadcrumb-section {
+            background-color: #2f4052;
+            padding: 80px 0;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .breadcrumb-text h1 {
+            color: #ffffff;
+            font-size: 48px;
+            margin: 0;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const stripe = Stripe('{{ app.request.server.get('STRIPE_PUBLIC_KEY') }}');
+            const clientSecret = '{{ clientSecret }}';
+            
+            // Get the total price from the variable passed from controller
+            const totalPrice = Number({{ totalPrice }});
+         
+            const elements = stripe.elements({
+                clientSecret: clientSecret
+            });
+            
+            const paymentElement = elements.create('payment');
+            paymentElement.mount('#payment-element');
+            
+            const paymentForm = document.getElementById('payment-form');
+            const submitButton = document.getElementById('submit-button');
+            const paymentMessage = document.getElementById('payment-message');
+            
+            // Afficher l'alerte si le statut est défini
+            {% if status is defined and status %}
+                Swal.fire({
+                    title: "{{ status == 'success' ? 'Order Confirmed!' : 'Payment Failed!' }}",
+                    text: "{{ message }}",
+                    icon: "{{ status == 'success' ? 'success' : 'error' }}",
+                    confirmButtonText: "OK"
+                });
+            {% endif %}
+            
+            paymentForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                submitButton.disabled = true;
+                submitButton.textContent = 'Processing...';
+                
+                try {
+                    const result = await stripe.confirmPayment({
+                        elements,
+                        redirect: 'if_required',
+                        confirmParams: {
+                            return_url: '{{ url('checkout_success', {'id': order.id}) }}',
+                        },
+                    });
+                    
+                    if (result.error) {
+                        // En cas d'erreur, afficher SweetAlert
+                        Swal.fire({
+                            title: "Payment Failed!",
+                            text: result.error.message,
+                            icon: "error",
+                            confirmButtonText: "OK"
+                        });
+                        
+                        paymentMessage.textContent = result.error.message;
+                        submitButton.disabled = false;
+                        submitButton.textContent = 'Pay ' + new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(totalPrice);
+                    } else if (result.paymentIntent && result.paymentIntent.status === 'succeeded') {
+                        // Paiement réussi, afficher SweetAlert de succès
+                        Swal.fire({
+                            title: "Order Confirmed!",
+                            text: "Thank you for your order! We appreciate your business.",
+                            icon: "success",
+                            confirmButtonText: "OK"
+                        }).then((result) => {
+                            // Après avoir cliqué sur OK, rediriger vers la page de succès
+                            window.location.href = "{{ path('checkout_success', {'id': order.id}) }}";
+                        });
+                    }
+                } catch (e) {
+                    paymentMessage.textContent = "An error occurred during payment.";
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Pay ' + new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(totalPrice);
+                }
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+    <!-- Breadcrumb section -->
+    <div class="breadcrumb-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 offset-lg-2 text-center">
+                    <div class="breadcrumb-text">
+                       <h1>Complete your payment 💳💸</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End breadcrumb section -->
+    
+    <div class="container">
+        <div class="payment-container">
+           
+            
+            <h3>Total to pay: {{ totalPrice|number_format(2, '.', ',') }} €</h3>
+            
+            <form id="payment-form">
+                <div id="payment-element">
+                    <!-- Stripe Payment Element will be inserted here -->
+                </div>
+                <button id="submit-button" type="submit">
+                    Pay now {{ totalPrice }} €
+                </button>
+                <div id="payment-message" class="mt-3"></div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

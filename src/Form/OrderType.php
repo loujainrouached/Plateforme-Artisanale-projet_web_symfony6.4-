@@ -27,6 +27,9 @@ class OrderType extends AbstractType
                 ->add('orderHistory', HiddenType::class, [
                     'mapped' => false, // Prevent automatic mapping
                 ])
+                ->add('paid', HiddenType::class, [
+                    'mapped' => false, // Prevent automatic mapping
+                ])
              
             ;
             

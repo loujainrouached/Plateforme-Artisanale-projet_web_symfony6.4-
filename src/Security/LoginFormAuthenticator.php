@@ -72,7 +72,7 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
         if (in_array('ROLE_ADMIN', $user->getRoles())) {
             return new RedirectResponse($this->router->generate('back_user'));
         } elseif (in_array('ROLE_CLIENT', $user->getRoles()) || in_array('ROLE_ARTISTE', $user->getRoles())) {
-            return new RedirectResponse($this->router->generate('workshop_detail'));
+            return new RedirectResponse($this->router->generate('app_home'));
         }
 
         return new RedirectResponse($this->router->generate('app_home'));

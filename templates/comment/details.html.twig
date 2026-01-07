@@ -123,52 +123,56 @@
     transform: scale(1.2);
 }
 /* Style des étoiles */
-.stars {
-    cursor: pointer;
-}
-
-.stars i {
+.star-rating i {
     font-size: 24px;
     color: #ccc;
+    cursor: pointer;
     transition: color 0.3s;
 }
 
-.stars i.selected {
+.star-rating i.selected {
     color: #f39c12;
 }
-
-/* Style du formulaire */
-.comment-form-container {
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    margin-top: 30px;
-}
-
-.comment-form-container h4 {
-    font-size: 20px;
-    font-weight: bold;
-    color: #051922;
-}
-
-.comment-form-container textarea {
-    width: 100%;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 10px;
-    font-size: 16px;
-}
-.comment-rating {
-    margin-top: 5px;
-}
-
 .comment-rating i {
-    font-size: 18px;
-    margin-right: 2px;
+    font-size: 20px;
+    color: #ccc; /* Couleur par défaut (gris) */
+}
+
+.comment-rating i.selected {
+    color: #f39c12; /* Couleur jaune pour les étoiles sélectionnées */
 }
 
     </style>
+    <style>
+    .ratings-summary {
+        margin-bottom: 20px;
+    }
+    .average-rating {
+        font-size: 24px;
+        font-weight: bold;
+    }
+    .average-rating #average-stars i {
+        color: #f39c12;
+    }
+    .rating-row {
+        display: flex;
+        align-items: center;
+        margin: 5px 0;
+    }
+    .rating-row span {
+        width: 30px;
+        text-align: right;
+    }
+    .progress {
+        flex-grow: 1;
+        margin: 0 10px;
+        height: 12px;
+        background-color: #f0f0f0;
+    }
+    .progress-bar {
+        height: 100%;
+    }
+</style>
 {% endblock %}
 
     <!-- Breadcrumb -->
@@ -217,11 +221,12 @@
                         <!-- Liste des commentaires -->
                      <div class="comments-list-wrap mt-5">
                      
-    <h3 class="comment-count-title">{{ article.Comment|length }} Commentaire(s)</h3>
+   <h3 class="comment-count-title">{{ pagination|length }} Commentaire(s)</h3>
+
     <div class="comment-list">
-        {% if article.Comment is not empty %}
-          {% for comment in article.Comment %}
-<div class="single-comment-body d-flex align-items-center" id="comment-{{ comment.id }}">
+        {% if pagination|length > 0 %}
+            {% for comment in pagination %}
+                <div class="single-comment-body d-flex align-items-center" id="comment-{{ comment.id }}">
     <!-- ✅ Avatar de l'utilisateur -->
     <div class="comment-user-avatar me-3">
         {% if app.user.photo %}
@@ -235,15 +240,12 @@
         {% endif %}
     </div>    
         <div class="comment-text-body">
-        <div class="comment-rating">
-    {% for i in 1..5 %}
-        {% if comment.rating >= i %}
-            <i class="fas fa-star text-warning"></i> <!-- Étoile pleine -->
-        {% else %}
-            <i class="far fa-star text-secondary"></i> <!-- Étoile vide -->
-        {% endif %}
-    {% endfor %}
-</div>
+    <div class="comment-rating">
+                            {% for i in 1..5 %}
+                                <i class="fa fa-star {% if comment.rating >= i %}selected{% endif %}"></i>
+                            {% endfor %}
+                        </div>
+
             <h5>
                 {{ comment.user.name ?? 'Utilisateur anonyme' }}
                 <span class="comment-date">
@@ -282,15 +284,18 @@
 {% endfor %}
 
 
+      
+
+
+                        <!-- Formulaire d'ajout de commentaire -->
+                       <div class="pagination">
+                {{ knp_pagination_render(pagination) }}
+            </div>
         {% else %}
             <p>Aucun commentaire pour cet article.</p>
         {% endif %}
     </div>
 </div>
-
-
-                        <!-- Formulaire d'ajout de commentaire -->
-                       
                     {% if true %} {# Forcer l'affichage du formulaire #}
                         <div class="comment-form-container">
                             {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
@@ -306,7 +311,18 @@
 
     <!-- ✅ Note du commentaire -->
     
-
+<div class="form-group mt-3">
+    <label>Votre note :</label>
+    <div class="star-rating">
+        <i class="fa fa-star" data-value="1"></i>
+        <i class="fa fa-star" data-value="2"></i>
+        <i class="fa fa-star" data-value="3"></i>
+        <i class="fa fa-star" data-value="4"></i>
+        <i class="fa fa-star" data-value="5"></i>
+    </div>
+    <!-- Champ caché pour stocker la note -->
+    <input type="hidden" id="rating" name="rating" value="0">
+</div>
     <button type="submit" class="btn btn-primary mt-2">Envoyer</button>
 
 {{ form_end(form) }}
@@ -314,6 +330,25 @@
                     {% endif %}
 
                     </div>
+              <div class="ratings-summary">
+    <h5>Note Moyenne</h5>
+    <div class="average-rating">
+        <span id="average-rating">-</span> / 5
+        <div id="average-stars"></div>
+    </div>
+    <h6>Répartition des Notes</h6>
+    <div class="rating-breakdown">
+        {% for star in [5, 4, 3, 2, 1] %}
+            <div class="rating-row">
+                <span>{{ star }} ★</span>
+                <div class="progress">
+                    <div class="progress-bar" id="rating-bar-{{ star }}" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <span id="rating-count-{{ star }}">0</span>
+            </div>
+        {% endfor %}
+    </div>
+</div>
                 </div>
 
                 <!-- Sidebar avec les articles récents -->
@@ -363,6 +398,47 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 </script> #}
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    function loadRatings() {
+        fetch('/article/{{ article.id }}/ratings', {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('average-rating').innerText = data.averageRating;
+
+            // Mettre à jour les étoiles de la note moyenne
+            const starsContainer = document.getElementById('average-stars');
+            starsContainer.innerHTML = '';
+            for (let i = 1; i <= 5; i++) {
+                const star = document.createElement('i');
+                star.className = 'fa fa-star' + (i <= Math.round(data.averageRating) ? ' selected' : '');
+                starsContainer.appendChild(star);
+            }
+
+            // Mettre à jour la répartition
+            const totalComments = data.totalComments || 1;  // éviter la division par zéro
+            for (let star = 1; star <= 5; star++) {
+                const count = data.ratingsCount[star] || 0;
+                const percentage = (count / totalComments) * 100;
+                
+                const progressBar = document.getElementById('rating-bar-' + star);
+                progressBar.style.width = percentage + '%';
+
+                const countLabel = document.getElementById('rating-count-' + star);
+                countLabel.innerText = count;
+            }
+        })
+        .catch(error => console.error('Erreur lors du chargement des ratings:', error));
+    }
+
+    // Charger les ratings au chargement de la page
+    loadRatings();
+});
+</script>
+
 <script>
 function deleteComment(commentId) {
    
@@ -431,5 +507,24 @@ function cancelEdit(commentId) {
 }
 </script>
 
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const stars = document.querySelectorAll(".star-rating i");
+    const ratingInput = document.getElementById("rating");
+
+    stars.forEach(star => {
+        star.addEventListener("click", function() {
+            let value = this.getAttribute("data-value");
+            ratingInput.value = value; // Mettre à jour le champ caché
+
+            // Changer la couleur des étoiles sélectionnées
+            stars.forEach(s => s.classList.remove("selected"));
+            for (let i = 0; i < value; i++) {
+                stars[i].classList.add("selected");
+            }
+        });
+    });
+});
+</script>
 
 {% endblock %}

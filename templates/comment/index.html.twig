@@ -1,4 +1,4 @@
-{% extends 'baseback.html.twig' %}
+{% extends 'baseBack.html.twig' %}
 
 {% block title %}Gestion des Commentaires{% endblock %}
 
@@ -79,4 +79,51 @@
             </div>
         </div>
     </div>
+ <h4>Statistiques des commentaires par article</h4>
+
+<div style="width: 300px; height: 300px; margin: 0 auto;">
+    <canvas id="commentDonutChart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var ctx = document.getElementById('commentDonutChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: {{ articleNames|json_encode()|raw }},
+                datasets: [{
+                    label: 'Nombre de commentaires',
+                    data: {{ commentCounts|json_encode()|raw }},
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.6)',
+                        'rgba(255, 206, 86, 0.6)',
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(153, 102, 255, 0.6)',
+                        'rgba(255, 99, 132, 0.6)',
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 99, 132, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    }
+                },
+                responsive: false,  // On désactive pour garder la taille fixe
+                maintainAspectRatio: false,
+            }
+        });
+    });
+</script>
+
 {% endblock %}

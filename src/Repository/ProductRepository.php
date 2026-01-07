@@ -41,8 +41,6 @@ class ProductRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    
-
     public function findAllCategories(): array
 {
     return $this->createQueryBuilder('p')
@@ -62,6 +60,44 @@ public function findProductsByUser($userId)
 }
 
 
+public function findAvailableProducts(): array
+{
+    return $this->createQueryBuilder('p')
+        ->where('p.status = :status')
+        ->setParameter('status', 'dispo')
+        ->getQuery()
+        ->getResult();
+}
 
+
+public function renderWithNotifications(string $view, array $parameters = []): Response
+{
+    // Récupérer les produits en attente
+    $pendingProducts = $this->productRepository->find_En_Attente_Products();
+
+    // Ajouter les produits en attente aux paramètres globaux
+    $parameters['pendingProducts'] = $pendingProducts;
+
+    return new Response($this->twig->render($view, $parameters));
+} 
+
+public function find_En_Attente_Products(): array
+{
+    return $this->createQueryBuilder('p')
+        ->where('p.status = :status')
+        ->setParameter('status', 'en attente')
+        ->getQuery()
+        ->getResult();
+}
+// Dans ProductRepository.php
+public function countPendingProducts(): int
+{
+    return $this->createQueryBuilder('p')
+        ->select('COUNT(p)')
+        ->where('p.status = :status')
+        ->setParameter('status', 'en attente')
+        ->getQuery()
+        ->getSingleScalarResult();
+}
 
 }

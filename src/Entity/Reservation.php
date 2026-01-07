@@ -35,9 +35,9 @@ class Reservation
     private ?string $uniqueCode = null;
 
 
-    #[ORM\ManyToOne(inversedBy: 'Reservation', cascade: ['REMOVE'])]
-    #[ORM\JoinColumn(onDelete: 'CASCADE')]
-    private ?User $user = null;
+    #[ORM\ManyToOne(inversedBy: 'Reservation')]
+/*     #[ORM\JoinColumn(onDelete: 'CASCADE')]
+ */    private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'Reservation', cascade: ['REMOVE'])]
     #[ORM\JoinColumn(onDelete: 'CASCADE')]

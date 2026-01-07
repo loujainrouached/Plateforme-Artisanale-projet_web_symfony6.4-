@@ -17,7 +17,7 @@ class Comment
 
     #[ORM\Column(length: 255)]
      
-    #[Assert\NotBlank(message: 'comment can not be emplty.')]
+    #[Assert\NotBlank(message: 'Comment cannot be empty.')]
    
      
     private ?string $contenuComment = null;
@@ -27,6 +27,12 @@ class Comment
     private ?\DateTimeInterface $datecom = null;
 
     
+    #[ORM\Column(type: 'integer', nullable: true)]
+    #[Assert\Range(
+        min: 1,
+        max: 5,
+        notInRangeMessage: "La note doit être comprise entre {{ min }} et {{ max }}."
+    )]
     private ?int $rating = null;
 
     #[ORM\ManyToOne(inversedBy: 'Comment', cascade: ['REMOVE'])]

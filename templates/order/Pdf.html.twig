@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Facture #{{ order.id }} - Artflow</title>
+    <style>
+        body {
+            font-family: "Roboto", "Arial", sans-serif;
+            font-size: 14px;
+            color: #333;
+            line-height: 1.6;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 30px;
+            position: relative;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #1A4B84;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .company-logo {
+            color: #FF6B35;
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        .order-number {
+            color: #1A4B84;
+            font-size: 18px;
+        }
+        .order-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .customer-details, .order-meta {
+            width: 45%;
+        }
+        .delivery-info {
+            background-color: #FFE5D9;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .product-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .product-table th, 
+        .product-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        .product-table th {
+            background-color: #1A4B84;
+            color: white;
+        }
+        .total {
+            text-align: right;
+            font-size: 16px;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f1f1f1;
+            border-radius: 5px;
+        }
+        .total-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        .total-line-final {
+            font-weight: bold;
+            border-top: 2px solid #1A4B84;
+            padding-top: 10px;
+        }
+        .status-paid {
+            color: #28a745;
+            font-weight: bold;
+            background-color: #d4edda;
+            padding: 5px;
+            border-radius: 3px;
+        }
+        .status-pending {
+            color: #FF6B35;
+            font-weight: bold;
+            background-color: #FFE5D9;
+            padding: 5px;
+            border-radius: 3px;
+        }
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            color: #1A4B84;
+            font-size: 12px;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="company-logo">
+                Artflow
+            </div>
+            <div class="order-number">Commande #{{ order.id }}</div>
+        </div>
+
+        <div class="order-info">
+            <div class="customer-details">
+                <strong>Client :</strong> {{ order.user.name }} {{ order.user.lastname }}<br>
+                <strong>Email :</strong> {{ order.user.email }}
+
+                <div class="delivery-info">
+                    <h3>Informations de livraison</h3>
+                    <p><strong>Adresse :</strong> {{ order.deliveryAdress ?? 'Non spécifiée' }}</p>
+                    <p><strong>Téléphone :</strong> {{ order.phoneNumber ?? 'Non spécifié' }}</p>
+                </div>
+            </div>
+            <div class="order-meta">
+                <strong>Date de commande :</strong> {{ order.dateOrder|date('d/m/Y') }}<br>
+                <strong>Statut :</strong> 
+                {% if order.paid == 'paid' %}
+                    <span class="status-paid">Payé</span>
+                {% else %}
+                    <span class="status-pending">Non payée</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <table class="product-table">
+            <thead>
+                <tr>
+                    <th>Produit</th>
+                    <th>Prix unitaire</th>
+                    <th>Quantité</th>
+                    <th>Sous-total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in orderHistory %}
+                    {% if item.name is defined %}
+                        <tr>
+                            <td>{{ item.name }}</td>
+                            <td>{{ item.price }} €</td>
+                            <td>{{ item.quantity ?? 1 }}</td>
+                            <td>{{ (item.price * (item.quantity ?? 1))|number_format(2) }} €</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="total">
+            <div class="total-line">
+                <span>Sous-total</span>
+                <span>
+                    {% if orderHistory|last.totalPrice is defined %}
+                        {{ orderHistory|last.totalPrice }} €
+                    {% endif %}
+                </span>
+            </div>
+            <div class="total-line">
+                <span>Frais de livraison</span>
+                <span>10,00 €</span>
+            </div>
+            <div class="total-line total-line-final">
+                <span>Total TTC</span>
+                <span>
+                    {% if orderHistory|last.totalPrice is defined %}
+                        {{ (orderHistory|last.totalPrice + 10)|number_format(2) }} €
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+
+        <div class="footer">
+            © 2024 Artflow - Merci pour votre confiance - Retrouvez nos conditions générales de vente sur artflow.fr
+        </div>
+    </div>
+</body>
+</html>

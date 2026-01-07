@@ -4,6 +4,7 @@
 
 {% block body %}
 
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 
 <!-- search area -->
 	<div class="search-area">
@@ -93,6 +94,36 @@
 		</div>
 	</div>
 	<!-- end latest news -->
+
+	<div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+    <div id="map" style="width: 1300px; height: 500px; border-radius: 15px; box-shadow: 0 7px 14px rgba(53, 124, 179, 0.1);"></div>
+</div>
+				
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+    window.onload = function() {
+        // Initialize the map and set the initial view (adjust as needed)
+        var map = L.map('map').setView([36.8065, 10.1815], 6); // Default center (e.g., Tunisia)
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Get workshop data from Symfony (passing workshopData)
+        var workshops = {{ workshopData|json_encode()|raw }};
+
+        // Loop through workshops and add markers
+        workshops.forEach(function(workshopmap) {
+            if (workshopmap.latitude && workshopmap.longitude) {
+                // Add markers to the map using latitude and longitude from the database
+                L.marker([workshopmap.latitude, workshopmap.longitude]).addTo(map)
+                    .bindPopup(`<b>${workshopmap.name}</b>`);
+            }
+        });
+    }
+</script>
+
 
 	<!-- logo carousel -->
 	<div class="logo-carousel-section">

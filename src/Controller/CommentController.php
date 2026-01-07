@@ -16,6 +16,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\Persistence\ManagerRegistry;
+use Knp\Component\Pager\PaginatorInterface;
 
 
 final class CommentController extends AbstractController
@@ -24,8 +25,22 @@ final class CommentController extends AbstractController
     public function index(CommentRepository $commentRepository): Response
     {
         $comments = $commentRepository->findAll();
+    
+        // Récupérer les statistiques (nombre de commentaires par article)
+        $stats = $commentRepository->getCommentStatsByArticle();
+    
+        $articleNames = [];
+        $commentCounts = [];
+    
+        foreach ($stats as $stat) {
+            $articleNames[] = $stat['article']; // Titre de l'article
+            $commentCounts[] = $stat['totalComments']; // Nombre de commentaires
+        }
+    
         return $this->render('comment/index.html.twig', [
             'comments' => $comments,
+            'articleNames' => $articleNames,  // ✅ Il manque ça
+            'commentCounts' => $commentCounts  // ✅ Et ça
         ]);
     }
     
@@ -93,7 +108,7 @@ public function show(ArticleRepository $articleRepository, int $id): Response
     
         return $this->redirectToRoute('article_details', ['id' => $article->getId()]);
     }*/
-    #[Route('/article/{id}', name: 'article_details')]
+ /*    #[Route('/article/{id}', name: 'article_details')]
 public function show(ArticleRepository $articleRepository, Request $request, EntityManagerInterface $entityManager, int $id): Response
 {
     $article = $articleRepository->find($id);
@@ -140,7 +155,7 @@ public function show(ArticleRepository $articleRepository, Request $request, Ent
         'form' => $form->createView(), // ✅ Ajout du formulaire
 
     ]);
-}
+} */
 
     
     #[Route('/comment/edit/{id}', name: 'edit_comment_page', methods: ['POST'])]
@@ -212,5 +227,153 @@ public function deleteComment(Comment $comment, EntityManagerInterface $entityMa
         // Rediriger vers la liste des commentaires après la suppression
         return $this->redirectToRoute('app_comment');
     }
+
+
+    #[Route('/article/{id}', name: 'article_details')]
+    public function show(ArticleRepository $articleRepository,CommentRepository $commentRepository, Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator, int $id): Response
+    {
+        $article = $articleRepository->find($id);
     
+        if (!$article) {
+            throw $this->createNotFoundException("L'article avec l'ID $id n'existe pas.");
+        }
+    
+
+        $user =$this->getUser();
+
+        $comment = new Comment();
+        $form = $this->createForm(CommentType::class, $comment);
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user = $entityManager->getRepository(User::class)->find($user->getId()); // Simule un user connecté
+            if (!$user) {
+                throw $this->createNotFoundException("Utilisateur introuvable.");
+            }
+    
+            $badWords = ['idiot', 'stupide', 'nul', 'bête']; // Liste des mots interdits
+    
+            $contenu = $form->get('contenuComment')->getData();
+            $contenuFiltre = $this->filterBadWords($contenu, $badWords);
+    
+            $comment->setUser($user);
+            $comment->setArticle($article);
+            $comment->setDateCom(new \DateTime());
+            $comment->setContenuComment($contenuFiltre);
+            if ($request->isMethod('POST')) {
+                $rating = $request->request->get('rating'); // Récupération manuelle de la note
+                if ($rating !== null) {
+                    $comment->setRating((int) $rating);
+                }
+            }    
+            $entityManager->persist($comment);
+            $entityManager->flush();
+    
+            $this->addFlash('success', 'Commentaire ajouté avec succès.');
+    
+            return $this->redirectToRoute('article_details', ['id' => $article->getId()]);
+        }
+        $query = $commentRepository->createQueryBuilder('c')
+        ->andWhere('c.article = :article')
+        ->setParameter('article', $article)
+        ->orderBy('c.datecom', 'DESC')
+        ->getQuery();
+        $pagination = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1), // Page actuelle (via ?page=1, ?page=2, etc.)
+            3 // Nombre de commentaires par page
+        );
+        $recentArticles = $articleRepository->findBy(
+            ['categorie' => $article->getCategorie()],
+            ['datepub' => 'DESC'],
+            3
+        );
+        $session = $request->getSession();
+    $viewedArticles = $session->get('viewed_articles', []);
+
+    if (!in_array($article->getId(), $viewedArticles)) {
+        $article->incrementViews();
+        $entityManager->flush();
+
+        $viewedArticles[] = $article->getId();
+        $session->set('viewed_articles', $viewedArticles);
+    }
+        return $this->render('comment/details.html.twig', [
+            'article' => $article,
+            'recent_articles' => $recentArticles,
+            'pagination' => $pagination,
+
+            'form' => $form->createView(),
+
+        ]);
+    }
+    
+    private function filterBadWords(string $content, array $badWords): string
+    {
+        foreach ($badWords as $badWord) {
+            $stars = str_repeat('*', mb_strlen($badWord));
+            $content = str_ireplace($badWord, $stars, $content); 
+        }
+        return $content;
+    }
+    
+
+    #[Route('/article/{id}/ratings', name: 'article_ratings', methods: ['GET'])]
+    public function getRatingsStats(Article $article, CommentRepository $commentRepository): JsonResponse
+    {
+        $comments = $commentRepository->findBy(['article' => $article]);
+    
+        $ratingsCount = [
+            1 => 0,
+            2 => 0,
+            3 => 0,
+            4 => 0,
+            5 => 0,
+        ];
+    
+        $totalRating = 0;
+        $count = count($comments);
+    
+        foreach ($comments as $comment) {
+            $rating = $comment->getRating();
+            if ($rating >= 1 && $rating <= 5) {
+                $ratingsCount[$rating]++;
+                $totalRating += $rating;
+            }
+        }
+    
+        $averageRating = $count > 0 ? round($totalRating / $count, 1) : 0;
+    
+        return new JsonResponse([
+            'averageRating' => $averageRating,
+            'ratingsCount' => $ratingsCount,
+            'totalComments' => $count,
+        ]);
+    }
+
+
+    #[Route('/articles/search', name: 'article_search', methods: ['GET'])]
+public function search(Request $request, ArticleRepository $articleRepository): Response
+{
+    $query = $request->query->get('q', '');
+
+    $articles = $articleRepository->searchArticles($query);
+
+    $data = array_map(function (Article $article) {
+        return [
+            'id' => $article->getId(),
+            'titre' => $article->getTitre(),
+            'nomAuteur' => $article->getNomAuteur(),
+            'datepub' => $article->getDatepub()->format('Y-m-d'),
+            'contenu' => $article->getContenu(),
+            'categorie' => $article->getCategorie(),
+            'image' => $article->getImage(),
+        ];
+    }, $articles);
+
+    return $this->json(['articles' => $data]);
+}
+
+
+
 }

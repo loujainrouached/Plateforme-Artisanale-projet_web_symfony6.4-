@@ -44,7 +44,7 @@ final class ReponseController extends AbstractController
     }
  
 
-    #[Route('/reponse/add_user/{reclamationId}', name: 'reponse_add_user', methods: ['POST'])]
+    /* #[Route('/reponse/add_user/{reclamationId}', name: 'reponse_add_user', methods: ['POST'])]
     public function addResponseUser(
         Request $request, 
         ManagerRegistry $doctrine, 
@@ -106,6 +106,177 @@ final class ReponseController extends AbstractController
         }
         
         return $this->redirectToRoute('app_reponse');
+    } */
+
+    #[Route('/reponse/add/{reclamationId}', name: 'reponse_add_user', methods: ['POST'])]
+    public function addResponseUser(
+        Request $request, 
+        ManagerRegistry $doctrine, 
+        int $reclamationId
+    ): Response {
+        $entityManager = $doctrine->getManager();
+        $user =$this->getUser();
+        // Check if it's an AJAX request
+        $isAjax = $request->headers->get('X-Requested-With') === 'XMLHttpRequest';
+        
+        // Get the reclamation
+        $reclamation = $entityManager->getRepository(Reclamation::class)->find($reclamationId);
+        if (!$reclamation) {
+            return $this->handleAjaxError($isAjax, 'Reclamation not found');
+        }
+    
+        // Get the user who sent the message
+        $user = $entityManager->getRepository(User::class)->find($user->getId());
+        if (!$user) {
+            return $this->handleAjaxError($isAjax, 'Default user not found');
+        }
+    
+        $reponse = new Reponse();
+        $form = $this->createForm(ReponseType::class, $reponse);
+        $form->handleRequest($request);
+        
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Save the user's response
+            $reponse->setUser($user);
+            $reponse->setReclamation($reclamation);
+            $reponse->setCreatedAt(new \DateTimeImmutable());
+            $reponse->setIsRead(false);
+            
+            $entityManager->persist($reponse);
+            $entityManager->flush();
+    
+            // Get bot response
+            $botResponseText = $this->getBotResponse($reponse->getMessage());
+    
+            $botReponse = null;
+            if ($botResponseText) {
+                // Fetch the bot user
+                $botUser = $entityManager->getRepository(User::class)->find(2);
+                if (!$botUser) {
+                    return $this->handleAjaxError($isAjax, 'Bot user not found');
+                }
+    
+                // Save the bot's response
+                $botReponse = new Reponse();
+                $botReponse->setUser($botUser);
+                $botReponse->setReclamation($reclamation);
+                $botReponse->setMessage($botResponseText);
+                $botReponse->setCreatedAt(new \DateTimeImmutable());
+                $botReponse->setIsRead(false);
+    
+                $entityManager->persist($botReponse);
+                $entityManager->flush();
+            }
+    
+            // For AJAX requests, return JSON response
+            if ($isAjax) {
+                return $this->json([
+                    'status' => 'success',
+                    'userMessageTime' => $reponse->getCreatedAt()->format('H:i A'),
+                    'botMessage' => $botReponse ? $botReponse->getMessage() : null,
+                    'botMessageTime' => $botReponse ? $botReponse->getCreatedAt()->format('H:i A') : null
+                ]);
+            }
+    
+            // Fallback for non-AJAX requests
+            $this->addFlash('success', 'Response added successfully.');
+            return $this->redirectToRoute('reclamation_list');
+        }
+        
+        // Handle form validation errors
+        if ($isAjax) {
+            return $this->json([
+                'status' => 'error',
+                'errors' => $this->getFormErrors($form)
+            ], Response::HTTP_BAD_REQUEST);
+        }
+        
+        return $this->redirectToRoute('reclamation_list');
+    }
+    
+    // Helper method to handle AJAX errors
+    private function handleAjaxError(bool $isAjax, string $message): Response
+    {
+        if ($isAjax) {
+            return $this->json([
+                'status' => 'error',
+                'message' => $message
+            ], Response::HTTP_BAD_REQUEST);
+        }
+        
+        $this->addFlash('error', $message);
+        return $this->redirectToRoute('reclamation_list');
+    }
+    
+    // Helper method to extract form errors
+    private function getFormErrors(FormInterface $form): array
+    {
+        $errors = [];
+        foreach ($form->getErrors(true) as $error) {
+            $errors[] = $error->getMessage();
+        }
+        return $errors;
+    }
+     
+    private function getBotResponse(string $userMessage): string
+    {
+        // Convert to lowercase for case-insensitive matching
+        $userMessage = strtolower($userMessage);
+    
+        // Default reply
+        $botReply = "I'm a bot. An admin will review your message soon.";
+    
+        // Custom bot logic based on user input
+        if (str_contains($userMessage, 'help')) {
+            $botReply = "I see that you need help. Please describe your issue in detail, and our team will assist you!";
+        } elseif (str_contains($userMessage, 'status')) {
+            $botReply = "Your reclamation is currently being reviewed. We will update you soon.";
+        } elseif (str_contains($userMessage, 'thanks') || str_contains($userMessage, 'thank you')) {
+            $botReply = "You're welcome! Let me know if you need anything else.";
+        } elseif (str_contains($userMessage, 'hello') || str_contains($userMessage, 'hi')) {
+            $botReply = "Hello! How can I assist you today?";
+        } elseif (str_contains($userMessage, 'how are you')) {
+            $botReply = "I'm just a bot, but thanks for asking! How can I help you today?";
+        } elseif (str_contains($userMessage, 'refund')) {
+            $botReply = "If you're requesting a refund, please provide your order number and reason. Our team will review it.";
+        } elseif (str_contains($userMessage, 'delivery') || str_contains($userMessage, 'shipping')) {
+            $botReply = "For delivery inquiries, please provide your order ID so we can check the status.";
+        } elseif (str_contains($userMessage, 'contact admin')) {
+            $botReply = "An admin will review your message shortly. If it's urgent, please provide more details.";
+        } elseif (str_contains($userMessage, 'wrong order') || str_contains($userMessage, 'incorrect item')) {
+            $botReply = "We apologize for the mistake. Please provide your order details, and we will correct the issue.";
+        } elseif (str_contains($userMessage, 'payment issue') || str_contains($userMessage, 'card declined')) {
+            $botReply = "If you're facing payment issues, please check with your bank or try another payment method.";
+        } elseif (str_contains($userMessage, 'cancel my order')) {
+            $botReply = "To cancel an order, please provide your order ID. We'll check if it's still possible.";
+        } elseif (str_contains($userMessage, 'support')) {
+            $botReply = "Our support team is available to help. What do you need assistance with?";
+        } elseif (str_contains($userMessage, 'reset password')) {
+            $botReply = "To reset your password, please visit the login page and click 'Forgot Password'.";
+        } elseif (str_contains($userMessage, 'open hours') || str_contains($userMessage, 'working hours')) {
+            $botReply = "Our support team is available from 9 AM to 6 PM, Monday to Friday.";
+        } elseif (str_contains($userMessage, 'location') || str_contains($userMessage, 'where are you')) {
+            $botReply = "Our company is located at Esprit Ghazela Bloc M. Let us know if you need directions!";
+        } elseif (str_contains($userMessage, 'escalate') || str_contains($userMessage, 'manager')) {
+            $botReply = "If you want to escalate your issue, an admin will review your case as soon as possible.";
+        } elseif (str_contains($userMessage, 'complaint')) {
+            $botReply = "We’re sorry you had an issue. Please describe your complaint so we can resolve it.";
+        } elseif (str_contains($userMessage, 'warranty') || str_contains($userMessage, 'guarantee')) {
+            $botReply = "Please provide your product details, and we'll check the warranty status for you.";
+        } elseif (str_contains($userMessage, 'offer') || str_contains($userMessage, 'discount')) {
+            $botReply = "Check our latest offers on our website! Let us know if you need help finding something.";
+        } elseif (str_contains($userMessage, 'return policy')) {
+            $botReply = "Our return policy allows returns within 30 days of purchase. Contact support for more details.";
+        } elseif (str_contains($userMessage, 'faq')) {
+            $botReply = "You can check our Frequently Asked Questions (FAQs) on our website for quick answers.";
+        } elseif (str_contains($userMessage, 'covid') || str_contains($userMessage, 'pandemic')) {
+            $botReply = "We're taking all necessary safety measures during the COVID-19 pandemic. Stay safe!";
+        } else {
+            // If no keyword matches, return default response
+            $botReply = "I'm a bot! I will notify an admin about your message.";
+        }
+    
+        return $botReply;
     }
      
     #[Route('/message/deleteFront/{id}', name:'reponse_delete_user', methods: ['POST'])]

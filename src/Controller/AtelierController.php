@@ -15,16 +15,26 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 final class AtelierController extends AbstractController
 {
     #[Route('/atelier', name: 'workshop_detail')]
-    public function index(WorkshopRepository $workshopRepository): Response
-    {
-        // Fetch all workshops from the database
-        $workshops = $workshopRepository->findAll();
-
-        // Pass the workshops to the template
-        return $this->render('atelier/index.html.twig', [
-            'workshops' => $workshops, // Use 'workshops' instead of 'work'
-        ]);
+public function index(WorkshopRepository $workshopRepository, ManagerRegistry $managerr): Response
+{
+    // Fetch all workshops from the database for the listing
+    $workshops = $workshopRepository->findAll();
+    
+    // Prepare data for the map (latitude, longitude, and name)
+    $workshopData = [];
+    foreach ($workshops as $workshopmap) {
+        $workshopData[] = [
+            'latitude' => $workshopmap->getLatitude(),
+            'longitude' => $workshopmap->getLongitude(),
+            'name' => $workshopmap->getTitle(),
+        ];
     }
+       // Pass both workshop listing and map data to the template
+       return $this->render('atelier/index.html.twig', [
+        'workshops' => $workshops,   // Full workshop details for listing
+        'workshopData' => $workshopData, // Map data (latitude, longitude, name)
+    ]);
+}
     
 
     #[Route('/workshop/{id}', name: 'workshop_details')]

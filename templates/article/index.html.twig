@@ -41,10 +41,23 @@
 
 	<!-- latest news -->
 	 <div class="latest-news mt-150 mb-150">
-        <div class="container">
+         <div class="container">
+		<div class="search-bar-container text-end mb-4" style="text-align: right;">
+    <input type="text" id="searchInput" placeholder="Rechercher un article..." style="padding: 5px; border: 1px solid #ccc; border-radius: 5px;">
+</div>
+		<div class="product-filters text-center mb-4">
+    <ul>
+        <li class="filter-btn active" data-filter="*">ALL</li>
+        <li class="filter-btn" data-filter=".Peinture">Peinture</li>
+        <li class="filter-btn" data-filter=".Sculpture">Sculpture</li>
+        <li class="filter-btn" data-filter=".Photographie">Photographie</li>
+        <li class="filter-btn" data-filter=".Céramique">Céramique</li>
+    </ul>
+</div>
             <div class="row">
                 {% for article in articles %}
-                    <div class="col-lg-4 col-md-6">
+				<div class="col-lg-4 col-md-6 article-item {{ article.categorie|lower }}">
+                    
                         <div class="single-latest-news">
                             <a href="{{ path('appp_article', {'id': article.id}) }}">
                                 {% if article.image %}
@@ -59,8 +72,10 @@
 
                                     <span class="author"><i class="fas fa-user"></i> {{ article.nomAuteur }}</span>
                                     <span class="date"><i class="fas fa-calendar"></i> {{ article.datepub|date('Y-m-d') }}</span>
+									 <span class="author"><i class="fas fa-user"></i> {{article.views}}</span>
                                 </p>
                                 <p class="excerpt">{{ article.contenu|slice(0, 100) }}...</p>
+								<p><strong>Catégorie :</strong> {{ article.categorie }}</p>
                                 <a href="{{ path('article_details', {'id': article.id}) }}" class="read-more-btn">Lire plus <i class="fas fa-angle-right"></i></a>
                            
  </div>
@@ -121,5 +136,80 @@
 		</div>
 	</div>
 	<!-- end logo carousel -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const articles = document.querySelectorAll('.article-item');
 
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const filter = this.getAttribute('data-filter').toLowerCase();  // Convertir le filtre en minuscule
+
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+
+            articles.forEach(article => {
+                const articleCategories = article.classList;
+
+                if (filter === '*' || articleCategories.contains(filter.replace('.', ''))) {
+                    article.style.display = 'block';
+                } else {
+                    article.style.display = 'none';
+                }
+            });
+        });
+    });
+});
+
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const articleContainer = document.querySelector('.latest-news .row');
+
+    let timer;
+    searchInput.addEventListener('input', function() {
+        clearTimeout(timer);
+        timer = setTimeout(() => fetchArticles(searchInput.value), 500);
+    });
+
+    function fetchArticles(query) {
+        fetch('/articles/search?q=' + encodeURIComponent(query), {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(response => response.json())
+        .then(data => {
+            articleContainer.innerHTML = ''; // Vider les articles actuels
+
+            if (data.articles.length === 0) {
+                articleContainer.innerHTML = '<p>Aucun article trouvé.</p>';
+            } else {
+                data.articles.forEach(article => {
+                    const html = `
+                        <div class="col-lg-4 col-md-6 article-item ${article.categorie.toLowerCase()}">
+                            <div class="single-latest-news">
+                                <a href="/article/${article.id}">
+                                    <div class="latest-news-bg" style="background-image: url('/assets/back-office/images/${article.image}'); height: 200px; background-size: cover;"></div>
+                                </a>
+                                <div class="news-text-box">
+                                    <h3><a href="/article/${article.id}">${article.titre.substring(0, 20)}...</a></h3>
+                                    <p class="blog-meta">
+                                        <span class="author"><i class="fas fa-user"></i> ${article.nomAuteur}</span>
+                                        <span class="author"><i class="fas fa-user"></i> ${article.views}</span>
+
+                                        <span class="date"><i class="fas fa-calendar"></i> ${article.datepub}</span>
+                                    </p>
+                                    <p class="excerpt">${article.contenu.substring(0, 100)}...</p>
+                                    <p><strong>Catégorie :</strong> ${article.categorie}</p>
+                                    <a href="/article/${article.id}" class="read-more-btn">Lire plus <i class="fas fa-angle-right"></i></a>
+                                </div>
+                            </div>
+                        </div>`;
+                    articleContainer.innerHTML += html;
+                });
+            }
+        });
+    }
+});
+</script>
 {% endblock %}

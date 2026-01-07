@@ -6,161 +6,605 @@
  
 <style>
     .more-details-btn {
-        display: block;  /* Force l'affichage sous le bouton précédent */
-        margin-top: 10px; /* Ajoute un espace entre les boutons */
+        display: block;
+        margin-top: 10px;
+    }
+    
+    .search-product {
+        transition: all 0.3s;
+    }
+    
+    .search-highlight {
+        background-color: rgba(255, 255, 0, 0.2);
+    }
+    
+    /* Styles améliorés pour la barre de recherche */
+    .elegant-search {
+        position: relative;
+        margin-bottom: 20px;
+    }
+    
+    .elegant-search input {
+        width: 100%;
+        padding: 15px 20px;
+        border: none;
+        border-radius: 30px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        font-size: 16px;
+        transition: all 0.3s;
+        background-color: #fff;
+    }
+    
+    .elegant-search input:focus {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        outline: none;
+    }
+    
+    .elegant-search i {
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #F28123;
+        font-size: 18px;
+    }
+    
+    /* Animation pour les résultats de recherche */
+    .product-lists .col-lg-4 {
+        animation: fadeIn 0.5s ease-in-out;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Styles pour le slider de prix */
+    .price-filter {
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+    
+    .price-filter h4 {
+        margin-bottom: 20px;
+        color: #051922;
+    }
+    
+    .price-slider {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    
+    .price-range {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 10px;
+    }
+    
+    .price-input {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 15px;
+    }
+    
+    .price-input div {
+        width: 45%;
+    }
+    
+    .price-input label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+        font-size: 14px;
+    }
+    
+    .price-input input {
+        width: 100%;
+        padding: 8px 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+    }
+    
+    .price-filter-btn {
+        background-color: #F28123;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 50px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin-top: 15px;
+    }
+    
+    .price-filter-btn:hover {
+        background-color: #051922;
+    }
+    
+    /* Style spécifique pour le range slider jQuery UI */
+    .ui-slider {
+        height: 5px;
+        background: #ddd;
+        border: none;
+        border-radius: 5px;
+    }
+    
+    .ui-slider .ui-slider-range {
+        background: #F28123;
+        border-radius: 5px;
+    }
+    
+    .ui-slider .ui-slider-handle {
+        height: 16px;
+        width: 16px;
+        border-radius: 50%;
+        background: #F28123;
+        border: 3px solid #fff;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        outline: none;
+    }
+    
+    /* Style pour le conteneur de filtres */
+    .filter-container {
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+    
+    .filter-container h4 {
+        margin-bottom: 20px;
+        color: #051922;
+    }
+    
+    /* Style pour le filtre de catégorie */
+    .category-filter {
+        margin-top: 20px;
+    }
+    
+    .category-select {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+        margin-bottom: 15px;
+        background-color: #fff;
+        cursor: pointer;
+    }
+    
+    .sidebar-categories {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .sidebar-categories li {
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .sidebar-categories li:last-child {
+        border-bottom: none;
+    }
+    
+    .sidebar-categories li:hover {
+        color: #F28123;
+        padding-left: 5px;
+    }
+    
+    .sidebar-categories li.active {
+        color: #F28123;
+        font-weight: 600;
+    }
+    
+    .sidebar-categories li span {
+        float: right;
+        color: #666;
+        font-size: 14px;
     }
 </style>
-
-
-<!-- search area -->
-	<div class="search-area">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-12">
-					<span class="close-btn"><i class="fas fa-window-close"></i></span>
-					<div class="search-bar">
-						<div class="search-bar-tablecell">
-							<h3>Search For:</h3>
-							<input type="text" placeholder="Keywords">
-							<button type="submit">Search <i class="fas fa-search"></i></button>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- end search arewa -->
 	
-	<!-- breadcrumb-section -->
-	<div class="breadcrumb-section breadcrumb-bg">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-8 offset-lg-2 text-center">
-					<div class="breadcrumb-text">
-						<p>Unique Creations, Made with Passion!</p>
-						<h1>Shop</h1>
-					</div>
-					
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- end breadcrumb section -->
-
-	<!-- products -->
-	
-	</div>
-	<!-- end products -->
-
-	<!-- logo carousel -->
-	<div class="logo-carousel-section">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-12">
-					<div class="logo-carousel-inner">
-						<div class="single-logo-item">
-							<img src="assets/img/company-logos/1.png" alt="">
-						</div>
-						<div class="single-logo-item">
-							<img src="assets/img/company-logos/2.png" alt="">
-						</div>
-						<div class="single-logo-item">
-							<img src="assets/img/company-logos/3.png" alt="">
-						</div>
-						<div class="single-logo-item">
-							<img src="assets/img/company-logos/4.png" alt="">
-						</div>
-						<div class="single-logo-item">
-							<img src="assets/img/company-logos/5.png" alt="">
-						</div>
-					</div>
-				</div>
-			</div>
-		<div class="product-section mt-150 mb-150">
-        <div class="container">
-            <div class="row">
-          <div class="col-md-12">
-
-</div>
-
-            </div>
-
-         <div class="col-md-12">
-    <div class="product-filters">
-        <ul>
-            <li class="active" data-filter="*">All</li>
-            {% for category in categories %}
-                <li data-filter=".{{ category | lower | replace({' ': '-'}) }}">{{ category }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-</div>
-
-<div class="row product-lists">
-    {% for product in products %}
-        <div class="col-lg-4 col-md-6 text-center {{ product.category | lower | replace({' ': '-'}) }}">
-            <div class="single-product-item">
-                <div class="product-image">
-                    <!-- Utilisation du chemin de l'image dynamique -->
-                    <a href="single-product.html">
-                        <img src="{{ asset(product.image) }}" alt="{{ product.name }}">
-                    </a>
+<!-- breadcrumb-section -->
+<div class="breadcrumb-section breadcrumb-bg">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2 text-center">
+                <div class="breadcrumb-text">
+                    <p>Unique Creations, Made with Passion!</p>
+                    <h1>Shop</h1>
                 </div>
-                <h3>{{ product.name }}</h3>
-                <p class="product-price"><span></span> {{ product.price }} TND</p>
-              <div>
-              <a href="{{ path('product_details', {'id': product.id}) }}" class="read-more-btn more-details-btn">
-                  More details <i class="fas fa-angle-right"></i>
-              </a>
-              </div>
-			  <br><br>
-          <div>
-    <a href="{{ path('panier', {'id': product.id}) }}" class="cart-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</a>
-</div>
-
             </div>
         </div>
-    {% endfor %}
+    </div>
 </div>
+<!-- end breadcrumb section -->
 
-
+<!-- products -->
+<div class="product-section mt-150 mb-150">
+    <div class="container">
+        <div class="row">
+            <!-- Colonne pour les filtres -->
+            <div class="col-md-3">
+                <!-- Conteneur de filtre avec la barre de recherche -->
+                <div class="filter-container">
+                    <h4>Search Products</h4>
+                    <div class="elegant-search">
+                        <input type="text" id="ajax-search-input" placeholder="Search products...">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    
+                    <!-- Filtre par catégorie -->
+                    <div class="category-filter">
+                        <h5>Categories</h5>
+                        <ul class="sidebar-categories">
+                            <li class="active" data-category="all">All Categories <span id="all-count"></span></li>
+                            {% for category in categories %}
+                                <li data-category="{{ category | lower | replace({' ': '-'}) }}">{{ category }} <span id="{{ category | lower | replace({' ': '-'}) }}-count"></span></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Filtre de prix -->
+                <div class="price-filter">
+                    <h4>Filter by Price</h4>
+                    <div id="price-range-slider" class="price-slider"></div>
+                    <div class="price-range">
+                        <span><span id="price-min-display">{{ priceRange.min }}</span> TND</span>
+                        <span><span id="price-max-display">{{ priceRange.max }}</span> TND</span>
+                    </div>
+                    
+                    <div class="price-input">
+                        <div>
+                            <label for="price-min">Min Price</label>
+                            <input type="number" id="price-min" min="{{ priceRange.min }}" value="{{ priceRange.min }}">
+                        </div>
+                        <div>
+                            <label for="price-max">Max Price</label>
+                            <input type="number" id="price-max" min="{{ priceRange.max }}" value="{{ priceRange.max }}">
+                        </div>
+                    </div>
+                    
+                    <button type="button" id="price-filter-btn" class="price-filter-btn">Apply Filter</button>
+                </div>
+            </div>
+            
+            <!-- Colonne pour les produits -->
+            <div class="col-md-9">
+                <div class="row product-lists" id="products-container">
+                    {% for product in products %}
+                        <div class="col-lg-4 col-md-6 text-center {{ product.category | lower | replace({' ': '-'}) }}" data-price="{{ product.price }}">
+                            <div class="single-product-item">
+                                <div class="product-image">
+                                    <a href="single-product.html">
+                                        <img src="{{ asset(product.image) }}" alt="{{ product.name }}">
+                                    </a>
+                                </div>
+                                <h3>{{ product.name }}</h3>
+                                <p class="product-price"><span></span> {{ product.price }} TND</p>
+                                <div>
+                                    <a href="{{ path('product_details', {'id': product.id}) }}" class="read-more-btn more-details-btn">
+                                        More details <i class="fas fa-angle-right"></i>
+                                    </a>
+                                </div>
+                                <br><br>
+                                <div>
+                                    <a href="{{ path('panier', {'id': product.id}) }}" class="cart-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
     </div>
+</div>
 
-			<div class="row">
-				<div class="col-lg-12 text-center">
-					<div class="pagination-wrap">
-						<ul>
-							<li><a href="#">Prev</a></li>
-							<li><a href="#">1</a></li>
-							<li><a class="active" href="#">2</a></li>
-							<li><a href="#">3</a></li>
-							<li><a href="#">Next</a></li>
-						</ul>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/isotope/3.0.6/isotope.pkgd.min.js"></script>
+<!-- logo carousel -->
+<div class="logo-carousel-section">
+    <!-- Existing carousel code remains unchanged -->
+    <!-- ... -->
+</div>
+<!-- end logo carousel -->
 
+<!-- jQuery UI CSS (ajoutez cela dans l'en-tête de votre document) -->
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+<!-- jQuery UI (ajoutez cela avant votre script) -->
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+<!-- Ajax search script -->
 <script>
-    $(document).ready(function() {
-        var $grid = $('.product-lists').isotope({
+$(document).ready(function() {
+    // Variables pour le filtre de prix
+    var minPrice = 0;
+    var maxPrice = 1000;
+    
+    // Initialiser le slider de prix
+   // Initialiser le slider de prix
+$("#price-range-slider").slider({
+    range: true,
+    min: {{ priceRange.min }},
+    max: {{ priceRange.max }},
+    values: [{{ priceRange.min }}, {{ priceRange.max }}],
+    slide: function(event, ui) {
+        $("#price-min-display").text(ui.values[0]);
+        $("#price-max-display").text(ui.values[1]);
+        $("#price-min").val(ui.values[0]);
+        $("#price-max").val(ui.values[1]);
+    }
+});
+    
+    // Synchroniser les champs d'entrée avec le slider
+    $("#price-min").on("input", function() {
+        var value = parseInt($(this).val());
+        if (isNaN(value)) value = 0;
+        var currentValues = $("#price-range-slider").slider("values");
+        
+        if (value <= currentValues[1]) {
+            $("#price-range-slider").slider("values", 0, value);
+            $("#price-min-display").text(value);
+        }
+    });
+    
+    $("#price-max").on("input", function() {
+        var value = parseInt($(this).val());
+        if (isNaN(value)) value = 1000;
+        var currentValues = $("#price-range-slider").slider("values");
+        
+        if (value >= currentValues[0]) {
+            $("#price-range-slider").slider("values", 1, value);
+            $("#price-max-display").text(value);
+        }
+    });
+    
+    // Initialize isotope
+    var $grid = $('.product-lists').isotope({
+        itemSelector: '.col-lg-4',
+        layoutMode: 'fitRows'
+    });
+
+    // Store original products
+    var originalProducts = [];
+    $('.product-lists .col-lg-4').each(function() {
+        originalProducts.push($(this).clone());
+    });
+    
+    // Compter les produits par catégorie
+    function updateCategoryCounts() {
+        // Compteur pour "All Categories"
+        $('#all-count').text('(' + $('.product-lists .col-lg-4').length + ')');
+        
+        // Compteur pour chaque catégorie
+        var categories = {};
+        $('.product-lists .col-lg-4').each(function() {
+            var classList = $(this).attr('class').split(/\s+/);
+            for (var i = 0; i < classList.length; i++) {
+                if (classList[i] !== 'col-lg-4' && classList[i] !== 'col-md-6' && classList[i] !== 'text-center') {
+                    if (categories[classList[i]]) {
+                        categories[classList[i]]++;
+                    } else {
+                        categories[classList[i]] = 1;
+                    }
+                }
+            }
+        });
+        
+        // Mettre à jour les compteurs pour chaque catégorie
+        for (var category in categories) {
+            $('#' + category + '-count').text('(' + categories[category] + ')');
+        }
+    }
+    
+    // Initialiser les compteurs
+    updateCategoryCounts();
+    
+    // Category filter from sidebar
+    $('.sidebar-categories li').click(function() {
+        $('.sidebar-categories li').removeClass('active');
+        $(this).addClass('active');
+        
+        var filterValue = $(this).attr('data-category');
+        if (filterValue === 'all') {
+            filterValue = '*';
+        } else {
+            filterValue = '.' + filterValue;
+        }
+        
+        // Appliquer le filtre de catégorie
+        $grid.isotope({ filter: filterValue });
+        
+        // Mettre à jour les compteurs
+        updateCategoryCounts();
+    });
+    
+    // Fonction pour filtrer les produits par prix
+    function filterProductsByPrice() {
+        var minVal = $("#price-range-slider").slider("values", 0);
+        var maxVal = $("#price-range-slider").slider("values", 1);
+        
+        // Ajout d'un filtre personnalisé pour isotope
+        $grid.isotope({
+            filter: function() {
+                var price = parseInt($(this).attr('data-price'));
+                var categoryFilter = $('.sidebar-categories li.active').attr('data-category');
+                var isCategoryMatch = true;
+                
+                if (categoryFilter !== 'all') {
+                    isCategoryMatch = $(this).hasClass(categoryFilter);
+                }
+                
+                return price >= minVal && price <= maxVal && isCategoryMatch;
+            }
+        });
+        
+        // Mettre à jour les compteurs
+        updateCategoryCounts();
+    }
+    
+    // Appliquer le filtre de prix
+    $("#price-filter-btn").on("click", function() {
+        filterProductsByPrice();
+    });
+    
+    // Add debounce function to prevent too many requests
+    function debounce(func, wait) {
+        let timeout;
+        return function() {
+            const context = this;
+            const args = arguments;
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(context, args), wait);
+        };
+    }
+    
+    // Reset to original products
+    function resetProductsToOriginal() {
+        var $container = $('#products-container');
+        $container.empty();
+        
+        $.each(originalProducts, function(index, product) {
+            $container.append(product.clone());
+        });
+        
+        // Réinitialiser isotope
+        $grid.isotope('destroy');
+        $grid = $('.product-lists').isotope({
             itemSelector: '.col-lg-4',
             layoutMode: 'fitRows'
         });
-
-        $('.product-filters ul li').click(function() {
-            $('.product-filters ul li').removeClass('active');
-            $(this).addClass('active');
-
-            var filterValue = $(this).attr('data-filter');
-            $grid.isotope({ filter: filterValue });
+        
+        // Réappliquer les filtres actifs
+        filterProductsByPrice();
+        
+        // Mettre à jour les compteurs
+        updateCategoryCounts();
+    }
+    
+    // Ajax search function
+    function performSearch(query) {
+        if (query.length < 2) {
+            resetProductsToOriginal();
+            return;
+        }
+        
+        var categoryFilter = $('.sidebar-categories li.active').attr('data-category');
+        if (categoryFilter === 'all') {
+            categoryFilter = '';
+        }
+        
+        $.ajax({
+            url: '{{ path('product_search') }}',
+            type: 'GET',
+            data: {
+                q: query,
+                min_price: $("#price-range-slider").slider("values", 0),
+                max_price: $("#price-range-slider").slider("values", 1),
+                category: categoryFilter
+            },
+            success: function(data) {
+                if (data.products && data.products.length > 0) {
+                    // Remplacer les produits existants avec les résultats de recherche
+                    updateProductsWithSearchResults(data.products);
+                } else {
+                    // Aucun résultat trouvé, afficher un message
+                    $('#products-container').html('<div class="col-12 text-center"><p>No products found matching your search criteria.</p></div>');
+                    $grid.isotope('destroy');
+                }
+                
+                // Mettre à jour les compteurs
+                updateCategoryCounts();
+            },
+            error: function(xhr, status, error) {
+                console.error('Search request failed:', error);
+                $('#products-container').html('<div class="col-12 text-center"><p>Error while searching. Please try again.</p></div>');
+                $grid.isotope('destroy');
+            }
         });
+    }
+    
+    // Debounced search for better performance
+    const debouncedSearch = debounce(performSearch, 300);
+    
+    // Update products with search results
+    function updateProductsWithSearchResults(products) {
+        var $container = $('#products-container');
+        $container.empty();
+        
+        products.forEach(function(product) {
+            var productHtml = `
+            <div class="col-lg-4 col-md-6 text-center ${product.category ? product.category.toLowerCase().replace(' ', '-') : ''} search-product" data-price="${product.price}">
+                <div class="single-product-item">
+                    <div class="product-image">
+                  
+                        <a href="/product/${product.id}">
+    <img src="${product.image}" alt="${product.name}" style="width: 300px; height: 300px; object-fit: contain;">
+</a>
+                    </div>
+                    <h3>${product.name}</h3>
+                    <p class="product-price"><span></span> ${product.price} TND</p>
+                    <div>
+                        <a href="/product/${product.id}" class="read-more-btn more-details-btn">
+                            More details <i class="fas fa-angle-right"></i>
+                        </a>
+                    </div>
+                    <br><br>
+                    <div>
+                        <a href="/panier/${product.id}" class="cart-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</a>
+                    </div>
+                </div>
+            </div>
+            `;
+            
+            $container.append(productHtml);
+        });
+        
+        // Réinitialiser isotope avec les nouveaux produits
+        $grid.isotope('destroy');
+        $grid = $('.product-lists').isotope({
+            itemSelector: '.col-lg-4',
+            layoutMode: 'fitRows'
+        });
+        
+        // Appliquer le filtre de catégorie actif
+        var categoryFilter = $('.sidebar-categories li.active').attr('data-category');
+        if (categoryFilter !== 'all') {
+            $grid.isotope({ filter: '.' + categoryFilter });
+        }
+        
+        // Mettre à jour les compteurs
+        updateCategoryCounts();
+    }
+    
+    // Search input event handlers
+    $('#ajax-search-input').on('input', function() {
+        var query = $(this).val().trim();
+        debouncedSearch(query);
     });
+    
+    // Ajout d'un événement pour la touche Entrée
+    $('#ajax-search-input').on('keypress', function(e) {
+        if (e.which === 13) {
+            var query = $(this).val().trim();
+            performSearch(query);
+        }
+    });
+    
+    // Ajout d'un événement pour l'icône de recherche
+    $('.elegant-search i').on('click', function() {
+        var query = $('#ajax-search-input').val().trim();
+        performSearch(query);
+    });
+});
 </script>
-
-	<!-- end logo carousel -->
 {% endblock %}

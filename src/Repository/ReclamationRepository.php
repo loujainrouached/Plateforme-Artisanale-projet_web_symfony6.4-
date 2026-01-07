@@ -15,6 +15,16 @@ class ReclamationRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Reclamation::class);
     }
+    public function countTodayReclamations(): int
+    {
+        return $this->createQueryBuilder('r')
+            ->select('COUNT(r.id)')
+            ->where('r.createdAt BETWEEN :start AND :end')
+            ->setParameter('start', new \DateTimeImmutable('today 00:00:00'))
+            ->setParameter('end', new \DateTimeImmutable('tomorrow 00:00:00'))
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 
     //    /**
     //     * @return Reclamation[] Returns an array of Reclamation objects

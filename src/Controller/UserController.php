@@ -34,7 +34,7 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-
+use App\Service\UserExcelExporter;
 
 
 
@@ -43,7 +43,12 @@ final class UserController extends AbstractController
 {
    
 
-   
+    #[Route('/export-users', name: 'export_users')]
+    public function exportUsers(UserExcelExporter $userExcelExporter): Response
+    {
+ 
+        return $userExcelExporter->export();
+    }
 
     #[Route('/user', name: 'user')]
     public function index(): Response

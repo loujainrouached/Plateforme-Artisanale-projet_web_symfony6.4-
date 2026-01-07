@@ -19,26 +19,26 @@ class Article
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Title is required.")]
+    #[Assert\NotBlank(message: "Le titre est obligatoire.")]
     #[Assert\Length(
         min: 5,
         max: 100,
-        minMessage: "Title must contain at least 5 characters..",
-        maxMessage: "Title cannot exceed 100 characters.."
+        minMessage: "Le titre doit contenir au moins 5 caractères.",
+        maxMessage: "Le titre ne peut pas dépasser 100 caractères."
     )]
     private ?string $titre = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank(message: "Content is required")]
+    #[Assert\NotBlank(message: "Le contenu est obligatoire.")]
     #[Assert\Length(
         min: 10,
-        minMessage: "Content must contain at least 10 characters.."
+        minMessage: "Le contenu doit contenir au moins 10 caractères."
     )]
     private ?string $contenu = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    #[Assert\NotBlank(message: "Publication date is required.")]
-#[Assert\Type(type: \DateTimeInterface::class, message: "Please enter a valid date.")]
+    #[Assert\NotBlank(message: "La date de publication est obligatoire.")]
+#[Assert\Type(type: \DateTimeInterface::class, message: "Veuillez entrer une date valide.")]
 #[Assert\EqualTo(
     value: "today",
     message: "Vous devez entrer la date d’aujourd’hui."
@@ -50,24 +50,27 @@ class Article
    
     private ?string $image = null;
     #[ORM\Column(type: "string", length: 100)]
-    #[Assert\NotBlank(message: "Category is required.")]
+    #[Assert\NotBlank(message: "La catégorie est obligatoire.")]
 
     private string $categorie;
     
     #[ORM\Column(type: "string", length: 255)]
-    #[Assert\NotBlank(message: "Author name is required.")]
+    #[Assert\NotBlank(message: "Le nom de l'auteur est obligatoire.")]
     #[Assert\Length(
         min: 8,
-        max: 25,
-        minMessage: "Author name must contain at least 8 characters..",
-        maxMessage: "Author name cannot exceed 15 characters"
+        max: 15,
+        minMessage: "Le nom de l'auteur doit contenir au moins 8 caractères.",
+        maxMessage: "Le nom de l'auteur ne peut pas dépasser 15 caractères."
     )]
     #[Assert\Regex(
         pattern: "/^[A-ZÀ-Ÿ][\p{L}\s]*$/u",
-        message: "Author name must start with a capital letter and contain only letters and spaces."
+        message: "Le nom de l'auteur doit commencer par une majuscule et ne contenir que des lettres et des espaces."
     )]
     
     private string $nomAuteur;
+    #[ORM\Column(type: 'integer')]
+private ?int $views = 0;
+
 
     /**
      * @var Collection<int, Comment>
@@ -151,6 +154,21 @@ public function getNomAuteur(): ?string
 public function setNomAuteur(string $nomAuteur): self
 {
     $this->nomAuteur = $nomAuteur;
+    return $this;
+}
+public function getViews(): ?int
+{
+    return $this->views;
+}
+
+public function setViews(int $views): self
+{
+    $this->views = $views;
+    return $this;
+}
+public function incrementViews(): self
+{
+    $this->views++;
     return $this;
 }
 

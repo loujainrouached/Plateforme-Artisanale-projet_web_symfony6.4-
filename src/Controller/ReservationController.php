@@ -14,6 +14,21 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mime\Address;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Writer\PngWriter;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\Label\Label;
+use Endroid\QrCode\Color\Color;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+
 
 final class ReservationController extends AbstractController
 {
@@ -57,7 +72,7 @@ final class ReservationController extends AbstractController
         ]);
     } */
 
-    #[Route('/reservation/new/{workshopId}', name: 'reservation_new')]
+    /* #[Route('/reservation/new/{workshopId}', name: 'reservation_new')]
     public function newReservation(
         int $workshopId,
         Request $request,
@@ -113,7 +128,7 @@ final class ReservationController extends AbstractController
             'form' => $form->createView(),
             'dateReservation' => (new \DateTime())->format('Y-m-d H:i:s') // Pass as string to Twig
         ]);
-    }
+    } */
     
 
 
@@ -246,6 +261,140 @@ final class ReservationController extends AbstractController
     } 
 
     
+    #[Route('/reservation/new/{workshopId}', name: 'reservation_new')]
+    public function newReservation(
+        int $workshopId,
+        Request $request,
+        EntityManagerInterface $em,
+        WorkshopRepository $workshopRepo,
+        MailerInterface $mailer  // Inject MailerInterface here
+    ): Response {
+        // 1) Fetch the Workshop
+        $workshop = $workshopRepo->find($workshopId);
+        if (!$workshop) {
+            throw $this->createNotFoundException('Workshop not found.');
+        }
+    
+        // 2) Create Reservation
+        $reservation = new Reservation();
+        $reservation->setWorkshop($workshop);
+    
+        // 3) Get the currently logged-in user or default to user with ID 1
+        $user = $this->getUser();
+        if (!$user) {
+            $user = $em->getRepository(User::class)->find($user->getId()); // Default user with ID 1
+        }
+    
+        if (!$user) {
+            throw $this->createNotFoundException('Default user with ID  not found.');
+        }
+    
+        $reservation->setUser($user);
+        $reservation->setUniqueCode('RES-' . substr(uniqid(), -6));
+    
+        // 4) Create the form
+        $form = $this->createForm(ReservationType::class, $reservation);
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Set dateReservation based on input or default to now
+            $dateReservationString = $request->request->get('form')['dateReservation'] ?? null;
+            if ($dateReservationString) {
+                $reservation->setDateReservation(new \DateTime($dateReservationString));
+            } else {
+                $reservation->setDateReservation(new \DateTime()); // Default to now
+            }
+    
+            // Persist the reservation
+            $em->persist($reservation);
+            $em->flush();
+           
+      // Define the correct QR code path once
+/* $qrCodePath = $this->getParameter('kernel.project_dir') . '/public/qrcodes/' . $reservation->getUniqueCode() . '.png';
+
+// Generate and save the QR code
+$qrCode = Builder::create()
+    ->writer(new PngWriter())
+    ->data($reservation->getUniqueCode())  
+    ->encoding(new Encoding('UTF-8'))
+    ->size(200)
+    ->margin(10)
+    ->backgroundColor(new Color(255, 255, 255))
+    ->build();
+
+// Save QR Code to the defined path
+$qrCode->saveToFile($qrCodePath); */
+
+// Email-friendly QR Code URL (optional)
+/* $qrCodeUrl = $request->getSchemeAndHttpHost() . '/qrcodes/' . $reservation->getUniqueCode() . '.png';
+ */
+
+            // 5) Send email to the user
+            try {
+                $email = (new TemplatedEmail())
+                    ->from('skanderselmi19@gmail.com')  // Your sending email address
+                    ->to((string) $user->getEmail())
+                    ->subject('Reservation Confirmation')
+                    ->text('You have successfully reserved a spot for ' . $workshop->getTitle() . '!')
+                    ->htmlTemplate('reservation/reservation_email.html.twig')
+                    ->context([
+                        'user' => $user,
+                        'workshop' => $workshop, 
+                      
+
+                    ])
+                   /*  ->attachFromPath($qrCodePath, 'qrcode.png', 'image/png') */;
+
+
+                $mailer->send($email); // Send the email
+                $this->addFlash('success', 'Reservation created and confirmation email sent!');
+            } catch (\Exception $e) {
+                // If an error occurs when sending the email
+                $this->addFlash('error', 'There was an issue sending the confirmation email: ' . $e->getMessage());
+            }
+    
+            // 6) Redirect or return response
+            return $this->redirectToRoute('workshop_detail', ['id' => $workshopId]);
+        }
+    
+        return $this->render('reservation/index.html.twig', [
+            'user' => $user,
+            'workshop' => $workshop,
+            'form' => $form->createView(),
+            'dateReservation' => (new \DateTime())->format('Y-m-d H:i:s') // Pass as string to Twig
+        ]);
+    }
+
+    #[Route('/calendar', name: 'calendar')]
+    public function calendar(WorkshopRepository $workshop, ReservationRepository $reservationRepository)
+    {
+        // Force filtering for user with ID 1
+        $user = $this->getUser();
+    
+        $reservations = $reservationRepository->findBy(['user' => $user->getId()]);
+
+    
+        $rdvs = [];
+    
+        foreach ($reservations as $reservation) {
+            $event = $reservation->getWorkshop();
+            $eventDate = $event->getDate()->format('Y-m-d'); // Assuming getDate() returns a DateTime object
+    
+            $rdvs[] = [
+            
+                'title' => $event->getTitle(),
+                'start' => $eventDate . ' 09:00:00', // Assuming default start time
+                'end' => $eventDate . ' 16:00:00', // Assuming default end time
+                'description' => $event->getDescription(),
+            ];
+        }
+    
+        $data = json_encode($rdvs);
+    
+        return $this->render('reservation/calendar.html.twig', compact('data'));
+
+    }
+
 }
 
     

@@ -28,9 +28,13 @@ class SecurityController extends AbstractController
     {
         $resetToken = $request->getSession()->get('reset_token');
 
-        //$resetToken = $this->getTokenFromSession();
+       
+         /*    $email = $request->request->get('email');
+            $password = $request->request->get('password');
   
              // Check if the user is already authenticated
+             $recaptchaResponse = $request->request->get('g-recaptcha-response'); */
+
     if ($this->getUser()) {
         $user = $this->getUser();
         
@@ -41,6 +45,27 @@ class SecurityController extends AbstractController
             // Redirect to login to show the banned message
             return $this->redirectToRoute('login');
         }
+
+        /*    // Vérification reCAPTCHA
+           if (!$recaptchaResponse) {
+            $this->addFlash('error', 'Veuillez valider le reCAPTCHA.');
+            return $this->redirectToRoute('login');
+        }
+
+        $client = HttpClient::create();
+        $response = $client->request('POST', 'https://www.google.com/recaptcha/api/siteverify', [
+            'body' => [
+                'secret' => $_ENV['GOOGLE_RECAPTCHA_SECRET'], // Clé secrète
+                'response' => $recaptchaResponse
+            ]
+        ]);
+
+        $data = $response->toArray();
+
+        if (!$data['success']) {
+            $this->addFlash('error', 'Échec de la validation reCAPTCHA.');
+            return $this->redirectToRoute('login');
+        } */
         
         // If user is authenticated and not banned, proceed to redirect based on role
         return $this->redirectToRoute('app_redirect_by_role');
@@ -62,6 +87,7 @@ class SecurityController extends AbstractController
             'last_username' => $lastUsername,
             'error' => $error,
             'resetToken' => $resetToken,
+            /* 'recaptcha_site_key' => $_ENV['GOOGLE_RECAPTCHA_SITE_KEY'] */
         ]);
     }
 
@@ -80,7 +106,7 @@ class SecurityController extends AbstractController
         return $this->redirectToRoute('login');
     }
 
-    #[Route('/check-login', name: 'check_login')]
+  /*   #[Route('/check-login', name: 'check_login')]
 public function checkLogin(Security $security): Response
 {
     $user = $security->getUser();
@@ -91,7 +117,7 @@ public function checkLogin(Security $security): Response
     }
 
     return $this->redirectToRoute('app_home');
-}
+} */
 
 
 

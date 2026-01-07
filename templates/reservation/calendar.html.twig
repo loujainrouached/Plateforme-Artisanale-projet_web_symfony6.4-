@@ -1,0 +1,110 @@
+{% extends 'basecalendar.html.twig' %}
+
+{% block title %}Calendrier{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        #calendar-container {
+            width: 60%; /* Reduced width */
+            margin: auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        /* Increase event title size */
+        .fc-event-title {
+            font-size: 16px !important;
+            font-weight: bold;
+        }
+
+        /* Style calendar navigation bar */
+        .fc-toolbar {
+            background: #87CEEB; /* Ciel bleu */
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .fc-toolbar h2 {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .fc-button {
+            background: #70B8D0 !important; /* Lighter bleu ciel */
+            border: none !important;
+            color: white !important;
+        }
+
+        .fc-button:hover {
+            background: #5D9FBD !important; /* Darker bleu ciel */
+        }
+        /* Style for the Cancel button */
+        .btn-cancel {
+            background-color: #FF6F61; /* Soft red */
+            color: white;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            text-align: center;
+            display: inline-block;
+            width: auto;
+            text-decoration: none;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .btn-cancel:hover {
+            background-color: #D55A4A; /* Darker red */
+            transform: scale(1.05);
+        }
+
+        .btn-cancel:focus {
+            outline: none;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+ <div class="card-action">
+        <a href="{{ path('profil') }}" class="btn-cancel">Cancel</a>
+    </div>
+    <div id="calendar-container">
+        <div id="calendrier"></div>
+    </div>
+
+   
+
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    window.onload = () => {
+        let calendarElt = document.querySelector("#calendrier");
+
+        let calendar = new FullCalendar.Calendar(calendarElt, {
+            initialView: 'dayGridMonth',
+            timeZone: 'Europe/Paris',
+            selectable: false,
+            headerToolbar: {
+                start: 'prev,next today',
+                center: 'title',
+                end: 'dayGridMonth,timeGridWeek'
+            },
+            events: {{ data|raw }},
+            editable: false,
+            eventTimeFormat: { // Customize the time format
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true,
+                meridiem: 'short'
+            }
+        });
+
+        calendar.render();
+    }
+</script>
+
+{% endblock %}

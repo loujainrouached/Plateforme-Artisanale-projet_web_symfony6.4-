@@ -41,12 +41,8 @@ class ResetPasswordController extends AbstractController
     {
         $form = $this->createForm(ResetPasswordRequestFormType::class);
         $form->handleRequest($request);
-    // In your ResetPasswordController's request method
-/*     $session = $request->getSession();
- */    
-    // Store the reset token in session (if applicable)
-/*     $session->set('reset_token', $resetToken);
- */
+   
+  
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var string $email */
             $email = $form->get('email')->getData();
@@ -77,6 +73,7 @@ class ResetPasswordController extends AbstractController
         // This prevents exposing whether or not a user was found with the given email address or not
         if (null === ($resetToken = $this->getTokenObjectFromSession())) {
             $resetToken = $this->resetPasswordHelper->generateFakeResetToken();
+            dump($resetToken);
         }
 
         return $this->render('reset_password/check_email.html.twig', [
@@ -181,6 +178,8 @@ class ResetPasswordController extends AbstractController
                 'resetToken' => $resetToken,
             ])
         ;
+        dump("Sending email to: " . $user->getEmail());
+
         try{
         $mailer->send($email);
         }catch(\Exception $e) {

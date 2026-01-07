@@ -1,15 +1,103 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}Order Confirmation{% endblock %}
+
 {% block body %}
-    <div class="container">
-        <h1>Order Confirmation</h1>
-        
-        <div class="confirmation-details">
-            <h2>Thank you for your order!</h2>
-            <p>Order ID: {{ order.id }}</p>
-            <p>Delivery Address: {{ order.deliveryAdress }}</p>
-            <p>Phone Number: {{ order.phoneNumber }}</p>
-            <p>Total: {{ order.cart.totalPrice }} TND</p>
+    <!-- Breadcrumb section -->
+    <div class="breadcrumb-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 offset-lg-2 text-center">
+                    <div class="breadcrumb-text">
+             <h1>Your payment has been successfully completed! 🎉</h1>
+
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+    <!-- End breadcrumb section -->
+
+    <div class="container d-flex flex-column justify-content-center align-items-center text-center" style="min-height: 80vh;">
+        <h1 class="text-{{ status == 'success' ? 'success' : 'danger' }} fw-bold">
+            {% if status == 'success' %}
+                Your payment has been successfully processed! Your order is on its way.
+            {% else %}
+                Something went wrong! Please try again.
+            {% endif %}
+        </h1>
+
+        <p class="mt-3 text-secondary">
+            {% if status == 'success' %}
+                Thank you for your purchase! We will send you an email when your order is delivered.
+                <br>
+                If you have any questions, please email <a href="mailto:orders@ARTFLOW.com" class="text-primary">orders@ARTFLOW.com</a>.
+            {% endif %}
+        </p>
+
+        <div class="thank-you-msg">
+            <p class="lead">Your order is being processed!</p>
+            <div class="spinner" id="spinner"></div>
+        </div>
+
+    </div>
+
+    <style>
+        .breadcrumb-section {
+            padding: 40px 0;
+            background-color: #f8f9fa;
+            margin-bottom: 30px;
+        }
+
+        .breadcrumb-text h1 {
+            font-size: 2.5rem;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .thank-you-msg {
+            margin-top: 30px;
+            font-size: 1.2rem;
+            color: #555;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-top: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .text-success {
+            color:rgb(226, 184, 31) !important;
+        }
+
+        .text-danger {
+            color: #dc3545 !important;
+        }
+
+        .text-primary {
+            color: #007bff !important;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const status = '{{ status }}';
+            if (status === 'success') {
+                setTimeout(() => {
+                    document.getElementById('spinner').style.display = 'none';
+                    document.querySelector('.thank-you-msg p').innerText = 'Your order has been confirmed! Check your email for updates.';
+                }, 3000); // Simulating a processing time before showing confirmation
+            }
+        });
+    </script>
 {% endblock %}

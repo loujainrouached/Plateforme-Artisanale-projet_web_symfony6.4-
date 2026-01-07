@@ -43,6 +43,7 @@ security:
         # - { path: ^/profile, roles: ROLE_USER }
         # - { path: ^/profile, roles: ROLE_ARTISTE }
           - { path: ^/delete, roles: ROLE_ADMIN }
+        #  - { path: ^/qrcodes/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
 
 when@test:

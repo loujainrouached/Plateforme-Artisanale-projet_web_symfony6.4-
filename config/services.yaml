@@ -10,6 +10,7 @@ parameters:
     images_directory: '%kernel.project_dir%/public/assets/back-office/images'
    # recaptcha_site_key: '%env(NOCAPTCHA_SITEKEY)%'
     #recaptcha_secret_key: '%env(NOCAPTCHA_SECRET)%'
+    google_recaptcha_site_key: '%env(GOOGLE_RECAPTCHA_SITE_KEY)%'
   
 
 services:
@@ -17,6 +18,8 @@ services:
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        bind:
+            $stripeSK: "%env(STRIPE_SK)%"
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name

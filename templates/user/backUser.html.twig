@@ -16,6 +16,8 @@
                   <div class="card-header">
                     <div class="d-flex align-items-center">
                       <h4 class="card-title">Add Row</h4>
+                      
+            
 
 
                   {#     <button
@@ -33,7 +35,11 @@
                        Add new User
                     </a>
 
-
+ <div class="text-end">
+    <a href="{{ path('export_users') }}" class="btn btn-success btn-round ms-auto">
+        <i class="fa fa-file-excel"></i> Export to Excel
+    </a>
+</div>
 
 
                     </div>
@@ -127,6 +133,7 @@
                     </div>
 
                       <div class="table-responsive">
+         
                         <table
                           id="add-row"
                           class="display table table-striped table-hover"
@@ -229,6 +236,8 @@
             <i class="fa fa-times"></i>
         </button>
     </div>
+   
+
 </td>
 
                         

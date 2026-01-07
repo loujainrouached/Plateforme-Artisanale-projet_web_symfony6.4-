@@ -125,6 +125,15 @@
 {% endif %}
 
 {{ form_end(form) }}
+{% if showPaymentButton %}
+    <div class="alert alert-success mt-3">
+        Your order has been confirmed! You can now proceed with the payment.
+    </div>
+    <a href="{{ path('checkout') }}" class="btn btn-success mt-2">
+        Pay online
+    </a>
+    <p class="mt-2">If you do not wish to pay online now, you can pay upon delivery.</p>
+{% endif %}
 
                                         
                                         </div>
